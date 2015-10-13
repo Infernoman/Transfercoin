@@ -1200,12 +1200,13 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
         return bnTargetLimit.GetCompact(); // second block
 
     int64_t nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
-    if(pindexBest->nHeight >= HARD_FORK_BLOCK && nActualSpacing < TARGET_SPACING_FORK * 10){
-            nActualSpacing = TARGET_SPACING_FORK * 10;
-    } else if(nActualSpacing < 0) {
+    
+    if(nActualSpacing < 0)
         nActualSpacing = TARGET_SPACING;
-    }
-
+        
+    if(pindexBest->nHeight >= HARD_FORK_BLOCK && nActualSpacing < TARGET_SPACING_FORK * 10)
+        nActualSpacing = TARGET_SPACING_FORK * 10;
+        
     // ppcoin: target change every block
     // ppcoin: retarget with exponential moving toward target spacing
     CBigNum bnNew;
