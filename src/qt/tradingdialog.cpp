@@ -824,6 +824,7 @@ void tradingDialog::on_UpdateKeys_clicked()
          QMessageBox::information(this,"API Configuration Complete","Api connection has been successfully configured and tested.");
          ui->ApiKeyInput->setEchoMode(QLineEdit::Password);
          ui->SecretKeyInput->setEchoMode(QLineEdit::Password);
+         ui->PasswordInput->setText("");
          ui->TradingTabWidget->setTabEnabled(0,true);
          ui->TradingTabWidget->setTabEnabled(1,true);
          ui->TradingTabWidget->setTabEnabled(3,true);
@@ -871,8 +872,10 @@ void tradingDialog::on_SaveKeys_clicked()
     // we write a string which is basically the same thing.
     // Stream operator support to be properly added in future.
 
-    // qstring to std string add space and convert to const char for stream
-    const char* API = (ui->ApiKeyInput->text().toStdString() + ui->SecretKeyInput->text().toStdString()).c_str();
+    // qstrings to utf8, add to byteArray and convert to const char for stream
+    const QByteArray byteArray = (ui->ApiKeyInput->text().toUtf8() + ui->SecretKeyInput->text().toUtf8());
+    const char *API = byteArray.constData();
+
     stream.write(API, 64);
 
     // make sure stream is flushed before closing it
@@ -905,17 +908,14 @@ void tradingDialog::on_LoadKeys_clicked()
 
     // Read in a buffer of data
     {
+        QString Key = "";
         stream.seekg(0);
         char buffer[33];
         stream.read(buffer, 32);
         buffer[32] = '\0';
 
         // Should print out "api key 32 digit"
-        std::ostringstream ApiKey;
-        std::streambuf * old = std::cout.rdbuf(ApiKey.rdbuf());
-        std::cout<<buffer;
-        //stringstream to standard string to Qstring
-        QString Key = QString::fromStdString(ApiKey.str());
+        Key = buffer;
         ui->ApiKeyInput->setText(Key);
     }
 
@@ -923,23 +923,19 @@ void tradingDialog::on_LoadKeys_clicked()
 
     // now seek to digit 32 and read in api secret
     {
+        QString Secret = "";
         stream.seekg(32);
         char buffer[33];
         stream.read(buffer, 32);
         buffer[32] = '\0';
 
         // Should print out "api secret 32 digit"
-        std::ostringstream ApiSecret;
-        std::streambuf * old = std::cout.rdbuf(ApiSecret.rdbuf());
-        std::cout<<buffer;
-        //stringstream to standard string to Qstring
-        QString Secret = QString::fromStdString(ApiSecret.str());
+        Secret = buffer;
         ui->SecretKeyInput->setText(Secret);
     }
 
     stream.flush();
     stream.close();
-    ui->PasswordInput->setText("");
 
 }
 
@@ -1100,14 +1096,15 @@ QString tradingDialog::HMAC_SHA512_SIGNER(QString UrlToSign, QString Secret){
     QByteArray byteArrayB = Secret.toUtf8();
     const char* Secretkey = byteArrayB.constData();
 
-    unsigned char* digest;
+    const EVP_MD *md = EVP_sha512();
+    unsigned char* digest = NULL;
 
     // Using sha512 hash engine here.
-    digest = HMAC(EVP_sha512(),  Secretkey, strlen( Secretkey), (unsigned char*) URL, strlen( URL), NULL, NULL);
+    digest = HMAC(md,  Secretkey, strlen( Secretkey), (unsigned char*) URL, strlen( URL), NULL, NULL);
 
     // Be careful of the length of string with the choosen hash engine. SHA1 produces a 20-byte hash value which rendered as 40 characters.
     // Change the length accordingly with your choosen hash engine
-    char mdString[128];
+    char mdString[129] = { 0 };
 
     for(int i = 0; i < 64; i++){
         sprintf(&mdString[i*2], "%02x", (unsigned int)digest[i]);
