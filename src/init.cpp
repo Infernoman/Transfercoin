@@ -979,6 +979,8 @@ bool AppInit2(boost::thread_group& threadGroup)
         } else {
             return InitError(_("You must specify a masternodeprivkey in the configuration. Please see documentation for help."));
         }
+
+        activeMasternode.ManageStatus();
     }
 
     if(GetBoolArg("-mnconflock", true)) {
