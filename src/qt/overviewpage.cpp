@@ -282,10 +282,10 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
 
 void OverviewPage::updateDarksendProgress()
 {
-    qDebug() << "updateDarksendProgress()";
-    if(IsInitialBlockDownload()) return;
-    
-    qDebug() << "updateDarksendProgress() getbalance";
+    if(IsInitialBlockDownload() || ShutdownRequested()) return;
+
+    if(!pwalletMain || !walletModel || !walletModel->getOptionsModel()) return;
+
     int64_t nBalance = pwalletMain->GetBalance();
     if(nBalance == 0)
     {

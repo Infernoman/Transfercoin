@@ -97,6 +97,7 @@ bool ShutdownRequested()
 
 void Shutdown()
 {
+	fRequestShutdown = true; // Needed when we shutdown the wallet
     LogPrintf("Shutdown : In progress...\n");
     static CCriticalSection cs_Shutdown;
     TRY_LOCK(cs_Shutdown, lockShutdown);
@@ -441,8 +442,12 @@ bool AppInit2(boost::thread_group& threadGroup)
     // Check for -socks - as this is a privacy risk to continue, exit here
     if (mapArgs.count("-socks"))
         return InitError(_("Error: Unsupported argument -socks found. Setting SOCKS version isn't possible anymore, only SOCKS5 proxies are supported."));
-
-    fServer = GetBoolArg("-server", false);
+    if (fDaemon)
+        fServer = true;
+    else
+    	fServer = GetBoolArg("-server", false);
+    if (!fHaveGUI) 
+       fServer = true;
     fPrintToConsole = GetBoolArg("-printtoconsole", false);
     fLogTimestamps = GetBoolArg("-logtimestamps", true);
 #ifdef ENABLE_WALLET
@@ -520,6 +525,9 @@ bool AppInit2(boost::thread_group& threadGroup)
 
     //ignore masternodes below protocol version
     nMasternodeMinProtocol = GetArg("-masternodeminprotocol", MIN_POOL_PEER_PROTO_VERSION);
+
+    if (fDaemon)
+        fprintf(stdout, "Transfer server starting\n"); 
 
     int64_t nStart;
 
