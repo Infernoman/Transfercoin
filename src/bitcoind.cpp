@@ -8,7 +8,6 @@
 #include "init.h"
 #include <boost/algorithm/string/predicate.hpp>
 
-static bool fDaemon;
 
 void WaitForShutdown(boost::thread_group* threadGroup)
 {
