@@ -5,12 +5,6 @@
 #include <qmessagebox.h>
 #include <qtimer.h>
 #include <rpcserver.h>
-#include "cryptostreampp/Algorithms.hpp"
-#include "cryptostreampp/CryptoStreamPP.hpp"
-#include "cryptostreampp/RandomNumberGenerator.hpp"
-
-#include <iosfwd>
-#include <iostream>
 
 #include <QDebug>
 #include <QNetworkAccessManager>
@@ -31,7 +25,6 @@
 #include <stdlib.h>
 
 using namespace std;
-using namespace cryptostreampp;
 
 tradingDialog::tradingDialog(QWidget *parent) :
     QDialog(parent),
@@ -835,107 +828,90 @@ void tradingDialog::on_UpdateKeys_clicked()
 
 }
 
+string tradingDialog::encryptDecrypt(string toEncrypt, string password) {
+
+    char * key = new char [password.length()+1];
+    std::strcpy (key, password.c_str());
+
+    string output = toEncrypt;
+    
+    for (unsigned int i = 0; i < toEncrypt.size(); i++)
+        output[i] = toEncrypt[i] ^ key[i % (sizeof(key) / sizeof(char))];
+    return output;
+}
+
 void tradingDialog::on_SaveKeys_clicked()
 {
-    // Encryption properties store iv and password information
-    EncryptionProperties props;
-
-    // Generate a 256 bit random IV from 4 separate 64 bit numbers
-    props.iv = crypto_random();
-    props.iv2 = crypto_random();
-    props.iv3 = crypto_random();
-    props.iv4 = crypto_random();
-
-    // What cipher function do we require?
-    props.cipher = Algorithm::AES;
+    bool fSuccess = true;
+    boost::filesystem::path pathConfigFile = GetDataDir() / "APIcache.txt";
+    boost::filesystem::ofstream stream (pathConfigFile.string(), ios::out | ios::trunc);
 
     // Qstring to string
     string password = ui->PasswordInput->text().toUtf8().constData();
-    // the password used for encryption / decryption
-    props.password = string(password);
 
-    /*==========  The main cryptostreampp usage  ==========*/
-    boost::filesystem::path pathAPI = GetDataDir() / "APIcache.txt";
-    // Create a stream in output mode to create a brand new file called apicache.txt
-    //CryptoStreamPP stream(pathAPI.string(), props, std::ios::out | std::ios::binary | std::ios::trunc);
-    CryptoStreamPP stream(pathAPI.string(), props, std::ios::out | std::ios::binary | std::ios::trunc);
-
-    // ------------------------------------------------------
-    // NOTE:
-    // After creating the stream, there will be a short pause
-    // as the key stream is initialized. This accounts for
-    // one million iterations of PBKDF2
-    // ------------------------------------------------------
-
-    // write to the stream as you would a normal fstream. Normally
-    // you would write a buffer of char data. In this example,
-    // we write a string which is basically the same thing.
-    // Stream operator support to be properly added in future.
+    if (password.length() <= 6){
+        QMessageBox::information(this,"Error !","Your password is too short !");
+        fSuccess = false;
+        stream.close();
+    }
 
     // qstrings to utf8, add to byteArray and convert to const char for stream
-    const QByteArray byteArray = (ui->ApiKeyInput->text().toUtf8() + ui->SecretKeyInput->text().toUtf8());
-    const char *API = byteArray.constData();
+    string Secret = ui->SecretKeyInput->text().toUtf8().constData();
+    string Key = ui->ApiKeyInput->text().toUtf8().constData();
+    string ESecret = "";
+    string EKey = "";
 
-    stream.write(API, 64);
+    if (stream.is_open() && fSuccess)
+    {
+        ESecret = encryptDecrypt(Secret, password);
+        EKey = encryptDecrypt(Key, password);
+        stream << ESecret << '\n';
+        stream << EKey;
+        stream.close();
+    }
+    if (fSuccess) {
+        QMessageBox::information(this,"Success !","Saved keys successfully to APIcache.txt");
+    }
 
-    // make sure stream is flushed before closing it
-    stream.flush();
-    stream.close();
 }
 
 void tradingDialog::on_LoadKeys_clicked()
 {
-    // Encryption properties store iv and password information
-    EncryptionProperties props;
-
-    // Generate a 256 bit random IV from 4 separate 64 bit numbers
-    props.iv = crypto_random();
-    props.iv2 = crypto_random();
-    props.iv3 = crypto_random();
-    props.iv4 = crypto_random();
-
-    // What cipher function do we require?
-    props.cipher = Algorithm::AES;
+    bool fSuccess = true;
+    boost::filesystem::path pathConfigFile = GetDataDir() / "APIcache.txt";
+    boost::filesystem::ifstream stream (pathConfigFile.string());
 
     // Qstring to string
     string password = ui->PasswordInput->text().toUtf8().constData();
-    // the password used for encryption / decryption
-    props.password = string(password);
 
-    boost::filesystem::path pathAPI = GetDataDir() / "APIcache.txt";
-    // Create a stream in input mode to open a file named APIcache.txt
-    CryptoStreamPP stream(pathAPI.string(), props, std::ios::in | std::ios::binary);
-
-    // Read in a buffer of data
-    {
-        QString Key = "";
-        stream.seekg(0);
-        char buffer[33];
-        stream.read(buffer, 32);
-        buffer[32] = '\0';
-
-        // Should print out "api key 32 digit"
-        Key = buffer;
-        ui->ApiKeyInput->setText(Key);
+    if (password.length() <= 6){
+        QMessageBox::information(this,"Error !","Your password is too short !");
+        fSuccess = false;
+        stream.close();
     }
 
-    stream.flush();
+    QString DSecret = "";
+    QString DKey = "";
 
-    // now seek to digit 32 and read in api secret
+    if (stream.is_open() && fSuccess)
     {
-        QString Secret = "";
-        stream.seekg(32);
-        char buffer[33];
-        stream.read(buffer, 32);
-        buffer[32] = '\0';
-
-        // Should print out "api secret 32 digit"
-        Secret = buffer;
-        ui->SecretKeyInput->setText(Secret);
+        int i =0;
+        for ( std::string line; std::getline(stream,line); )
+        {
+            if (i == 0 ){
+                DSecret = QString::fromUtf8(encryptDecrypt(line, password).c_str());
+                ui->SecretKeyInput->setText(DSecret);
+            } else if (i == 1){
+                DKey = QString::fromUtf8(encryptDecrypt(line, password).c_str());
+                ui->ApiKeyInput->setText(DKey);
+            }
+            i++;
+        }
+        stream.close();
     }
-
-    stream.flush();
-    stream.close();
+    if (fSuccess) {
+        QMessageBox::information(this,"Success !","Loaded keys successfully from APIcache.txt");
+    }
 
 }
 
