@@ -830,8 +830,9 @@ void tradingDialog::on_UpdateKeys_clicked()
 
 string tradingDialog::encryptDecrypt(string toEncrypt, string password) {
 
-    char * key = new char [password.length()+1];
+    char * key = new char [password.size()+1];
     std::strcpy (key, password.c_str());
+	key[password.size()] = '\0'; // don't forget the terminating 0
 
     string output = toEncrypt;
     
