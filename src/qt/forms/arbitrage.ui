@@ -1,0 +1,1956 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Arbitrage</class>
+ <widget class="QDialog" name="Arbitrage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1031</width>
+    <height>594</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTabWidget" name="ArbitrageTabWidget">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="font">
+      <font>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="tabPosition">
+      <enum>QTabWidget::North</enum>
+     </property>
+     <property name="tabShape">
+      <enum>QTabWidget::Rounded</enum>
+     </property>
+     <property name="currentIndex">
+      <number>4</number>
+     </property>
+     <widget class="QWidget" name="ArbHistory">
+      <attribute name="title">
+       <string>Successful Trades</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QTableWidget" name="ArbHistoryTable"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="BittrexBalanceTab">
+      <attribute name="title">
+       <string>Bittrex Balance</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_11">
+       <item row="0" column="0">
+        <layout class="QGridLayout" name="gridLayout_9">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_55">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>TX Balance:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_56">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>TX Available:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_57">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>TX Pending:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="BittrexTXBalance">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0.00000000</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QLabel" name="label_58">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>BTC Balance:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLabel" name="BittrexTXAvailable">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0.00000000</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLabel" name="BittrexTXPending">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0.00000000</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QLabel" name="label_59">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>BTC Available:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QLabel" name="label_60">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>BTC Pending:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3">
+          <widget class="QLabel" name="BittrexBTCBalance">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0.00000000</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3">
+          <widget class="QLabel" name="BittrexBTCAvailable">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0.00000000</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="3">
+          <widget class="QLabel" name="BittrexBTCPending">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0.00000000</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QPushButton" name="BittrexTXGenDepositBTN">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Generate TX Deposit Address</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="2">
+          <widget class="QPushButton" name="BittrexBTCGenDepositBTN">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Generate BTC Deposit Address</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="1" rowspan="4">
+        <spacer name="horizontalSpacer_10">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>399</width>
+           <height>528</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_7">
+         <item>
+          <widget class="QLabel" name="BittrexTXAddress">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="BittrexBTCAddress">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0">
+        <layout class="QGridLayout" name="gridLayout_10">
+         <item row="3" column="0">
+          <widget class="QPushButton" name="Bittrex_Withdraw_MaxTX_Amount">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Max</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <spacer name="horizontalSpacer_8">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_61">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Withdraw BTC</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="label_62">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Amount:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_63">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Withdraw TX</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QPushButton" name="BittrexWithdrawTXBtn">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Withdraw</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_64">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Amount:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <spacer name="horizontalSpacer_9">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="BittrexWithdrawTXAddress">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="BittrexWithdrawTXInput">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_65">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Address:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0">
+          <widget class="QLabel" name="label_66">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Address:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QLineEdit" name="BittrexWithdrawBTCInput">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="QLineEdit" name="BittrexWithdrawBTCAddress">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0">
+          <widget class="QPushButton" name="Bittrex_Withdraw_MaxBTC_Amount">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Max</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="1">
+          <widget class="QPushButton" name="BittrexWithdrawBTCBtn">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Withdraw</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="3" column="0">
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>578</width>
+           <height>189</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="SafecexBalance">
+      <attribute name="title">
+       <string>SafeCex Balance</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_12">
+       <item row="0" column="0">
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_27">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>TX Balance:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_28">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>TX Available:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_30">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>TX Pending:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="SafecexTXBalance">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0.00000000</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QLabel" name="label_32">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>BTC Balance:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLabel" name="SafecexTXAvailable">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0.00000000</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLabel" name="SafecexTXPending">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0.00000000</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QLabel" name="label_35">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>BTC Available:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QLabel" name="label_36">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>BTC Pending:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3">
+          <widget class="QLabel" name="SafecexBTCBalance">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0.00000000</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3">
+          <widget class="QLabel" name="SafecexBTCAvailable">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0.00000000</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="3">
+          <widget class="QLabel" name="SafecexBTCPending">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0.00000000</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QPushButton" name="SafecexTXGenDepositBTN">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Generate TX Deposit Address</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="2">
+          <widget class="QPushButton" name="SafecexBTCGenDepositBTN">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Generate BTC Deposit Address</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="1" rowspan="4">
+        <spacer name="horizontalSpacer_7">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>399</width>
+           <height>528</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QLabel" name="SafecexTXAddress">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="SafecexBTCAddress">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0">
+        <layout class="QGridLayout" name="gridLayout_7">
+         <item row="3" column="0">
+          <widget class="QPushButton" name="Safecex_Withdraw_MaxTX_Amount">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Max</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_47">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Withdraw BTC</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="label_46">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Amount:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_43">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Withdraw TX</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QPushButton" name="SafecexWithdrawTXBtn">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Withdraw</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_44">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Amount:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="SafecexWithdrawTXAddress">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="SafecexWithdrawTXInput">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_45">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Address:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0">
+          <widget class="QLabel" name="label_48">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Address:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QLineEdit" name="SafecexWithdrawBTCInput">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="QLineEdit" name="SafecexWithdrawBTCAddress">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0">
+          <widget class="QPushButton" name="Safecex_Withdraw_MaxBTC_Amount">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Max</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="1">
+          <widget class="QPushButton" name="SafecexWithdrawBTCBtn">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Withdraw</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="3" column="0">
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>578</width>
+           <height>189</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="ExtradeBalance">
+      <attribute name="title">
+       <string>1Ex.Trade Balance</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_13">
+       <item row="0" column="0">
+        <layout class="QGridLayout" name="gridLayout_6">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_37">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>TX Balance:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_38">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>TX Available:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_39">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>TX Pending:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="ExtradeTXBalance">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0.00000000</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QLabel" name="label_40">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>BTC Balance:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLabel" name="ExtradeTXAvailable">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0.00000000</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLabel" name="ExtradeTXPending">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0.00000000</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QLabel" name="label_41">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>BTC Available:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QLabel" name="label_42">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>BTC Pending:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3">
+          <widget class="QLabel" name="ExtradeBTCBalance">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0.00000000</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3">
+          <widget class="QLabel" name="ExtradeBTCAvailable">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0.00000000</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="3">
+          <widget class="QLabel" name="ExtradeBTCPending">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0.00000000</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QPushButton" name="ExtradeTXGenDepositBTN">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Generate TX Deposit Address</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="2">
+          <widget class="QPushButton" name="ExtradeBTCGenDepositBTN">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Generate BTC Deposit Address</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="1" rowspan="4">
+        <spacer name="horizontalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>399</width>
+           <height>528</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <item>
+          <widget class="QLabel" name="ExtradeTXAddress">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="ExtradeBTCAddress">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0">
+        <layout class="QGridLayout" name="gridLayout_8">
+         <item row="3" column="0">
+          <widget class="QPushButton" name="Extrade_Withdraw_MaxTX_Amount">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Max</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <spacer name="horizontalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_49">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Withdraw BTC</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="label_50">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Amount:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_51">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Withdraw TX</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QPushButton" name="SafecexWithdrawTXBtn_2">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Withdraw</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_52">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Amount:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <spacer name="horizontalSpacer_6">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="ExtradeWithdrawTXAddress">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="ExtradeWithdrawTXInput">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_53">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Address:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0">
+          <widget class="QLabel" name="label_54">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Address:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QLineEdit" name="ExtradeWithdrawBTCInput">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="QLineEdit" name="ExtradeWithdrawBTCAddress">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0">
+          <widget class="QPushButton" name="Extrdae_Withdraw_MaxBTC_Amount">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Max</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="1">
+          <widget class="QPushButton" name="ExtradeWithdrawBTCBtn">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Withdraw</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="3" column="0">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>578</width>
+           <height>189</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="ApiKeys">
+      <attribute name="title">
+       <string>API Keys</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_8">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>SafeCex API Key</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" colspan="3">
+        <widget class="QLineEdit" name="SafecexApiKeyInput">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4" rowspan="9">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>607</width>
+           <height>528</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_18">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>SafeCex Secret</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="3">
+        <widget class="QLineEdit" name="SafecexSecretKeyInput"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_22">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Bittrex API Key</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1" colspan="3">
+        <widget class="QLineEdit" name="BittrexApiKeyInput"/>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_23">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Bittrex Secret</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1" colspan="3">
+        <widget class="QLineEdit" name="BittrexSecretKeyInput"/>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_24">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>1Ex.Trade API Key</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1" colspan="3">
+        <widget class="QLineEdit" name="ExtradeSecretKeyInput"/>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="label_25">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>1Ex.Trade Secret</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1" colspan="3">
+        <widget class="QLineEdit" name="ExtradeApiKeyInput"/>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="label_29">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Password</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1" colspan="3">
+        <widget class="QLineEdit" name="PasswordInput">
+         <property name="echoMode">
+          <enum>QLineEdit::Password</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QPushButton" name="LoadKeys">
+         <property name="minimumSize">
+          <size>
+           <width>115</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Load API Keys</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QPushButton" name="UpdateKeys">
+         <property name="minimumSize">
+          <size>
+           <width>125</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Update API Keys</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="2" colspan="2">
+        <widget class="QPushButton" name="SaveKeys">
+         <property name="minimumSize">
+          <size>
+           <width>115</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Save API Keys</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0" colspan="3">
+        <widget class="QLabel" name="label232_21">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saving keys:&lt;/p&gt;&lt;p&gt;1) Enter API Keys from more than 1 exchange&lt;/p&gt;&lt;p&gt;2) Enter Password&lt;/p&gt;&lt;p&gt;3) Save API Keys&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="3">
+        <widget class="QLabel" name="label232_22">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loading keys:&lt;/p&gt;&lt;p&gt;1) Enter Password&lt;/p&gt;&lt;p&gt;2) Load API Keys&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="Trade">
+      <attribute name="title">
+       <string>Trade</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0" colspan="5">
+        <widget class="QTableWidget" name="DebugHistory">
+         <property name="verticalScrollBarPolicy">
+          <enum>Qt::ScrollBarAsNeeded</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Total Earned:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="TotalEarned">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>0.00000000</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2" rowspan="3">
+        <spacer name="horizontalSpacer_11">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Preferred</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>190</width>
+           <height>58</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="3" rowspan="2" colspan="2">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <layout class="QHBoxLayout" name="SafecexLayout">
+           <item>
+            <widget class="QLabel" name="SafecexLabel">
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Safecex</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="SafecexCheckbox">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="BittrexLayout">
+           <item>
+            <widget class="QLabel" name="BittrexLabel">
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Bittrex</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="BittrexCheckbox">
+             <property name="text">
+              <string/>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="ExtradeLayout">
+           <item>
+            <widget class="QLabel" name="ExtradeLabel">
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>1Ex.Trade</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="ExtradeCheckbox">
+             <property name="text">
+              <string/>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>16</width>
+               <height>16</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_16">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Percent Gain</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QDoubleSpinBox" name="PercentGain">
+         <property name="decimals">
+          <number>4</number>
+         </property>
+         <property name="minimum">
+          <double>2.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_17">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Interval</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QDoubleSpinBox" name="Interval">
+         <property name="minimum">
+          <double>60.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>6000.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="3">
+        <widget class="QPushButton" name="StartArbButton">
+         <property name="text">
+          <string>Start Arbitrage</string>
+         </property>
+         <property name="autoRepeat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="4">
+        <widget class="QPushButton" name="StopArbButton">
+         <property name="text">
+          <string>Stop Arbitrage</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

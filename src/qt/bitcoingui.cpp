@@ -38,6 +38,7 @@
 #include "messagepage.h"
 #include "blockbrowser.h"
 #include "tradingdialog.h"
+#include "arbitrage.h"
 
 #ifdef Q_OS_MAC
 #include "macdockiconhandler.h"
@@ -141,6 +142,9 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     tradingDialogPage = new tradingDialog(this);
     tradingDialogPage->setObjectName("tradingDialog");
 
+    ArbitragePage = new Arbitrage(this);
+    ArbitragePage->setObjectName("Arbitrage");
+
     signVerifyMessageDialog = new SignVerifyMessageDialog(this);
 
     masternodeManagerPage = new MasternodeManager(this);
@@ -157,6 +161,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     centralStackedWidget->addWidget(messagePage);
     centralStackedWidget->addWidget(blockBrowser);
     centralStackedWidget->addWidget(tradingDialogPage);
+    centralStackedWidget->addWidget(ArbitragePage);
 
     QWidget *centralWidget = new QWidget();
     QVBoxLayout *centralLayout = new QVBoxLayout(centralWidget);
@@ -239,6 +244,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
 
     connect(TradingAction, SIGNAL(triggered()), tradingDialogPage, SLOT(InitTrading()));
+
+    connect(ArbitrageAction, SIGNAL(triggered()), ArbitragePage, SLOT(InitArbitrage()));
 
     // Double-clicking on a transaction on the transaction history page shows details
     connect(transactionView, SIGNAL(doubleClicked(QModelIndex)), transactionView, SLOT(showDetails()));
@@ -326,10 +333,18 @@ void BitcoinGUI::createActions()
     TradingAction->setProperty("objectName","TradingAction");
     tabGroup->addAction(TradingAction);
 
+    ArbitrageAction = new QAction(tr("&Arbitrage"), this);
+    ArbitrageAction ->setToolTip(tr("Start Arb"));
+    ArbitrageAction ->setCheckable(true);
+    ArbitrageAction ->setShortcut(QKeySequence(Qt::ALT + Qt::Key_8));
+    ArbitrageAction->setProperty("objectName","ArbitrageAction");
+    tabGroup->addAction(ArbitrageAction);
+
     showBackupsAction = new QAction(QIcon(":/icons/browse"), tr("Show Auto&Backups"), this);
     showBackupsAction->setStatusTip(tr("S"));
 
     connect(TradingAction, SIGNAL(triggered()), this, SLOT(gotoTradingPage()));
+    connect(ArbitrageAction, SIGNAL(triggered()), this, SLOT(gotoArbitragePage()));
     connect(blockAction, SIGNAL(triggered()), this, SLOT(gotoBlockBrowser()));
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(gotoOverviewPage()));
@@ -465,6 +480,7 @@ void BitcoinGUI::createToolBars()
 
     toolbar->addAction(blockAction);
     toolbar->addAction(TradingAction);
+    toolbar->addAction(ArbitrageAction);
     netLabel = new QLabel();
 
     QWidget *spacer = makeToolBarSpacer();
@@ -553,6 +569,7 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
         signVerifyMessageDialog->setModel(walletModel);
         blockBrowser->setModel(walletModel);
         tradingDialogPage->setModel(walletModel);
+        ArbitragePage->setModel(walletModel);
 
         setEncryptionStatus(walletModel->getEncryptionStatus());
         connect(walletModel, SIGNAL(encryptionStatusChanged(int)), this, SLOT(setEncryptionStatus(int)));
@@ -974,6 +991,16 @@ void BitcoinGUI::gotoTradingPage()
 
      TradingAction->setChecked(true);
      centralStackedWidget->setCurrentWidget(tradingDialogPage);
+
+  //  exportAction->setEnabled(false);
+  //  disconnect(exportAction, SIGNAL(triggered()), 0, 0);
+}
+
+void BitcoinGUI::gotoArbitragePage()
+{
+
+     ArbitrageAction->setChecked(true);
+     centralStackedWidget->setCurrentWidget(ArbitragePage);
 
   //  exportAction->setEnabled(false);
   //  disconnect(exportAction, SIGNAL(triggered()), 0, 0);
