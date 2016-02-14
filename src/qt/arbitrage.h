@@ -8,6 +8,7 @@
 #include "clientmodel.h"
 #include "walletmodel.h"
 #include "init.h"
+#include "util.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>

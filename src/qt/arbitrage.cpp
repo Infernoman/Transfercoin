@@ -688,7 +688,9 @@ QString Arbitrage::BuyTXBittrex(double Quantity, double Rate)
             URL += "buylimit";
             URL += "?apikey=";
             URL += this->BittrexApiKey;
-            URL += "&nonce=12345434&market=BTC-TX&quantity=";
+            URL += "&nonce="
+            URL += GetTimeMicros();
+            URL += "&market=BTC-TX&quantity=";
             URL += str.number(Quantity,'i',8);
             URL += "&rate=";
             URL += str.number(Rate,'i',8);
@@ -827,7 +829,9 @@ QString Arbitrage::SellTXBittrex(double Quantity, double Rate)
             URL += "selllimit";
             URL += "?apikey=";
             URL += this->BittrexApiKey;
-            URL += "&nonce=12345434&market=BTC-TX&quantity=";
+            URL += "&nonce="
+            URL += GetTimeMicros();
+            URL += "&market=BTC-TX&quantity=";
             URL += str.number(Quantity,'i',8);
             URL += "&rate=";
             URL += str.number(Rate,'i',8);
@@ -972,7 +976,8 @@ QString Arbitrage::BittrexWithdraw(double Amount, QString Address, QString Coin)
             URL += str.number(Amount,'i',8);
             URL += "&address=";
             URL += Address;
-            URL += "&nonce=12345434";
+            URL += "&nonce=";
+            URL += GetTimeMicros();
 
     QString Response = sendBittrexRequest(URL);
      return Response;
@@ -988,7 +993,9 @@ QString Arbitrage::GetBittrexBalance(QString Currency)
 
     QString URL = "https://bittrex.com/api/v1.1/account/getbalance?apikey=";
             URL += this->BittrexApiKey;
-            URL += "&nonce=12345434&currency=";
+            URL += "&nonce="
+            URL += GetTimeMicros();
+            URL += "&currency=";
             URL += Currency;
 
     QString Response = sendBittrexRequest(URL);
@@ -1009,7 +1016,9 @@ QString Arbitrage::GetBittrexBTCAddress()
 
     QString URL = "https://bittrex.com/api/v1.1/account/getdepositaddress?apikey=";
             URL += this->BittrexApiKey;
-            URL += "&nonce=12345434&currency=BTC";
+            URL += "&nonce="
+            URL += GetTimeMicros();
+            URL += "&currency=BTC";
 
     QString Response = sendBittrexRequest(URL);
     return Response;
@@ -1186,7 +1195,8 @@ QString Arbitrage::BuyTXSafecex(double Quantity, double Rate)
     QString URL = "https://safecex.com/api/buylimit";
             URL += "?apikey=";
             URL += this->SafecexApiKey;
-            URL += "&nonce=12345434";
+            URL += "&nonce=";
+            URL += GetTimeMicros();
             URL += "&market=TX/BTC&amount=";
             URL += str.number(Quantity,'i',8);
             URL += "&price=";
@@ -1243,7 +1253,8 @@ QString Arbitrage::SellTXSafecex(double Amount, double Price)
     QString URL = "https://safecex.com/api/selllimit";
             URL += "?apikey=";
             URL += this->SafecexApiKey;
-            URL += "&nonce=12345434";
+            URL += "&nonce=";
+            URL += GetTimeMicros();
             URL += "&market=TX/BTC&amount=";
             URL += str.number(Amount,'i',8);
             URL += "&price=";
@@ -1305,7 +1316,8 @@ QString Arbitrage::SafecexWithdraw(double Amount, QString Address, QString Coin)
             URL += str.number(Amount,'i',8);
             URL += "&address=";
             URL += Address;
-            URL += "&nonce=12345434";
+            URL += "&nonce=";
+            URL += GetTimeMicros();
 
     QString Response = sendSafecexRequest(URL);
      return Response;
@@ -1321,7 +1333,9 @@ QString Arbitrage::GetSafecexBalance(QString Currency)
 
     QString URL = "https://safecex.com/api/getbalance?apikey=";
             URL += this->SafecexApiKey;
-            URL += "&nonce=12345434&symbol=";
+            URL += "&nonce="
+            URL += GetTimeMicros();
+            URL += "&symbol=";
             URL += Currency;
 
     QString Response = sendSafecexRequest(URL);
@@ -1332,7 +1346,9 @@ QString Arbitrage::GetSafecexTXAddress()
 
     QString URL = "https://safecex.com/api/getbalance?apikey=";
             URL += this->SafecexApiKey;
-            URL += "&nonce=12345434&symbol=TX";
+            URL += "&nonce="
+            URL += GetTimeMicros();
+            URL += "&symbol=TX";
 
     QString Response = sendSafecexRequest(URL);
     return Response;
@@ -1342,7 +1358,9 @@ QString Arbitrage::GetSafecexBTCAddress()
 
     QString URL = "https://safecex.com/api/getbalance?apikey=";
             URL += this->SafecexApiKey;
-            URL += "&nonce=12345434&symbol=BTC";
+            URL += "&nonce="
+            URL += GetTimeMicros();
+            URL += "&symbol=BTC";
 
     QString Response = sendSafecexRequest(URL);
     return Response;
@@ -1523,7 +1541,9 @@ QString Arbitrage::BuyTXExtrade(QString OrderType, QString OrderSide, double Qua
             URL += OrderType;
             URL += "&side=";
             URL += OrderSide;
-            URL += "&nonce=12345434&market=TX&currency=BTC&amount=";
+            URL += "&nonce="
+            URL += GetTimeMicros();
+            URL += "&market=TX&currency=BTC&amount=";
             URL += str.number(Quantity,'i',8);
             URL += "&limit_price=";
             URL += str.number(Rate,'i',8);
@@ -1587,7 +1607,9 @@ QString Arbitrage::SellTXExtrade(QString OrderType, QString OrderSide, double Am
             URL += OrderType;
             URL += "&side=";
             URL += OrderSide;
-            URL += "&nonce=12345434&market=TX&currency=BTC&amount=";
+            URL += "&nonce="
+            URL += GetTimeMicros();
+            URL += "&market=TX&currency=BTC&amount=";
             URL += str.number(Amount,'i',8);
             URL += "&limit_price=";
             URL += str.number(Price,'i',8);
@@ -1607,7 +1629,8 @@ QString Arbitrage::ExtradeWithdraw(double Amount, QString Address, QString Coin)
             URL += str.number(Amount,'i',8);
             URL += "&address=";
             URL += Address;
-            URL += "&nonce=12345434";
+            URL += "&nonce=";
+            URL += GetTimeMicros();
 
     QString Response = sendExtradeRequest(URL, true);
      return Response;
@@ -1621,7 +1644,8 @@ QString Arbitrage::GetExtradeBalance(QString Currency)
 {
     QString URL = "https://1ex.trade/api/balances-and-info?apikey=";
             URL += this->ExtradeApiKey;
-            URL += "&nonce=12345434";
+            URL += "&nonce=";
+            URL += GetTimeMicros();
             URL += "&currency=";
             URL += Currency;
 
@@ -1632,7 +1656,9 @@ QString Arbitrage::GetExtradeTXAddress()
 {
     QString URL = "https://1ex.trade/api/crypto-deposit-address/get?apikey=";
             URL += this->ExtradeApiKey;
-            URL += "&nonce=12345434&market=TX";
+            URL += "&nonce="
+            URL += GetTimeMicros();
+            URL += "&market=TX";
 
     QString Response = sendExtradeRequest(URL, true);
     return Response;
@@ -1641,7 +1667,8 @@ QString Arbitrage::GetExtradeBTCAddress()
 {
     QString URL = "https://1ex.trade/api/crypto-deposit-address/get?apikey=";
             URL += this->ExtradeApiKey;
-            URL += "&nonce=12345434";
+            URL += "&nonce=";
+            URL += GetTimeMicros();
             URL += "&market=BTC";
 
     QString Response = sendExtradeRequest(URL, true);
@@ -1821,12 +1848,12 @@ QString Arbitrage::BuyTXYobit(double Quantity, double Rate)
 
     QString str = "";
     QString URL = "https://yobit.net/tapi?method=Trade";
-            URL += "nonce=12345434";
+            URL += "&nonce=";
+            URL += GetTimeMicros();
             URL += "&pair=tx_btc&type=buy&amount=";
             URL += str.number(Quantity,'i',8);
             URL += "&rate=";
             URL += str.number(Rate,'i',8);
-            URL += "&nonce=null";
 
     QString Response = sendSafecexRequest(URL);
     return Response;
@@ -1922,7 +1949,8 @@ QString Arbitrage::SellTXYobit(double Amount, double Price)
             URL += str.number(Amount,'i',8);
             URL += "&rate=";
             URL += str.number(Price,'i',8);
-            URL += "&nonce=null";
+            URL += "&nonce=";
+            URL += GetTimeMicros();
 
     QString Response = sendSafecexRequest(URL);
     return Response;
@@ -2020,7 +2048,8 @@ QString Arbitrage::YobitWithdraw(double Amount, QString Address, QString Coin)
             URL += str.number(Amount,'i',8);
             URL += "&address=";
             URL += Address;
-            URL += "&nonce=null";
+            URL += "&nonce=";
+            URL += GetTimeMicros();
 
     QString Response = sendYobitRequest(URL);
      return Response;
@@ -2033,8 +2062,9 @@ QString Arbitrage::GetYobitOrderBook()
 }
 QString Arbitrage::GetYobitBalance()
 {
-    QString URL = "https://yobit.net/tapi?method=getinfo";
-            URL += "&nonce=null";
+    QString URL = "https://yobit.net/tapi?method=getInfo";
+            URL += "&nonce=";
+            URL += GetTimeMicros();
 
     QString Response = sendYobitRequest(URL);
      return Response;
@@ -2043,7 +2073,8 @@ QString Arbitrage::GetYobitTXAddress()
 {
     QString URL = "https://yobit.net/tapi?method=GetDepositAddress";
             URL += "&coinName=tx";
-            URL += "&nonce=null";
+            URL += "&nonce=";
+            URL += GetTimeMicros();
 
     QString Response = sendYobitRequest(URL);
     return Response;
@@ -2052,7 +2083,8 @@ QString Arbitrage::GetYobitBTCAddress()
 {
     QString URL = "https://yobit.net/tapi?method=GetDepositAddress";
             URL += "&coinName=btc";
-            URL += "&nonce=null";
+            URL += "&nonce=";
+            URL += GetTimeMicros();
 
     QString Response = sendYobitRequest(URL);
     return Response;
