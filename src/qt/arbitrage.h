@@ -68,8 +68,8 @@ private slots:
     // Safecex
     //void BuySafecexSellExtrade(QJsonObject extrade, QJsonObject safecex);
     //void BuyExtradeSellSafecex(QJsonObject extrade, QJsonObject safecex);
-    //void BuyYobitSellSafecex(QJsonObject yobit, QJsonObject safecex);
-    //void BuySafecexSellYobit(QJsonObject yobit, QJsonObject safecex);
+    void BuyYobitSellSafecex(QJsonObject yobit, QJsonObject safecex);
+    void BuySafecexSellYobit(QJsonObject yobit, QJsonObject safecex);
     // Extrade
     //void BuyYobitSellExtrade(QJsonObject yobit, QJsonObject extrade);
     //void BuyExtradeSellYobit(QJsonObject yobit, QJsonObject extrade);
@@ -170,7 +170,7 @@ private slots:
 
     QString BittrexTimeStampToReadable(QString DateTime);
     QString HMAC_SHA512_SIGNER(QString UrlToSign,QString Secretkey);
-    std::string ParseRequestUri(const std::string& url);
+    std::string ParseRequestUri(std::string url);
     QString HMAC_SHA512_SIGNER_YOBIT(QString UrlToSign,QString Secretkey);
     QString HMAC_SHA256_SIGNER(QString UrlToSign,QString Secretkey);
     QJsonObject GetResultObjectFromJSONObject(QString response);

@@ -688,7 +688,7 @@ QString Arbitrage::BuyTXBittrex(double Quantity, double Rate)
             URL += "buylimit";
             URL += "?apikey=";
             URL += this->BittrexApiKey;
-            URL += "&nonce="
+            URL += "&nonce=";
             URL += GetTimeMicros();
             URL += "&market=BTC-TX&quantity=";
             URL += str.number(Quantity,'i',8);
@@ -829,7 +829,7 @@ QString Arbitrage::SellTXBittrex(double Quantity, double Rate)
             URL += "selllimit";
             URL += "?apikey=";
             URL += this->BittrexApiKey;
-            URL += "&nonce="
+            URL += "&nonce=";
             URL += GetTimeMicros();
             URL += "&market=BTC-TX&quantity=";
             URL += str.number(Quantity,'i',8);
@@ -993,7 +993,7 @@ QString Arbitrage::GetBittrexBalance(QString Currency)
 
     QString URL = "https://bittrex.com/api/v1.1/account/getbalance?apikey=";
             URL += this->BittrexApiKey;
-            URL += "&nonce="
+            URL += "&nonce=";
             URL += GetTimeMicros();
             URL += "&currency=";
             URL += Currency;
@@ -1016,7 +1016,7 @@ QString Arbitrage::GetBittrexBTCAddress()
 
     QString URL = "https://bittrex.com/api/v1.1/account/getdepositaddress?apikey=";
             URL += this->BittrexApiKey;
-            URL += "&nonce="
+            URL += "&nonce=";
             URL += GetTimeMicros();
             URL += "&currency=BTC";
 
@@ -1333,7 +1333,7 @@ QString Arbitrage::GetSafecexBalance(QString Currency)
 
     QString URL = "https://safecex.com/api/getbalance?apikey=";
             URL += this->SafecexApiKey;
-            URL += "&nonce="
+            URL += "&nonce=";
             URL += GetTimeMicros();
             URL += "&symbol=";
             URL += Currency;
@@ -1346,7 +1346,7 @@ QString Arbitrage::GetSafecexTXAddress()
 
     QString URL = "https://safecex.com/api/getbalance?apikey=";
             URL += this->SafecexApiKey;
-            URL += "&nonce="
+            URL += "&nonce=";
             URL += GetTimeMicros();
             URL += "&symbol=TX";
 
@@ -1358,7 +1358,7 @@ QString Arbitrage::GetSafecexBTCAddress()
 
     QString URL = "https://safecex.com/api/getbalance?apikey=";
             URL += this->SafecexApiKey;
-            URL += "&nonce="
+            URL += "&nonce=";
             URL += GetTimeMicros();
             URL += "&symbol=BTC";
 
@@ -1541,7 +1541,7 @@ QString Arbitrage::BuyTXExtrade(QString OrderType, QString OrderSide, double Qua
             URL += OrderType;
             URL += "&side=";
             URL += OrderSide;
-            URL += "&nonce="
+            URL += "&nonce=";
             URL += GetTimeMicros();
             URL += "&market=TX&currency=BTC&amount=";
             URL += str.number(Quantity,'i',8);
@@ -1607,7 +1607,7 @@ QString Arbitrage::SellTXExtrade(QString OrderType, QString OrderSide, double Am
             URL += OrderType;
             URL += "&side=";
             URL += OrderSide;
-            URL += "&nonce="
+            URL += "&nonce=";
             URL += GetTimeMicros();
             URL += "&market=TX&currency=BTC&amount=";
             URL += str.number(Amount,'i',8);
@@ -1656,7 +1656,7 @@ QString Arbitrage::GetExtradeTXAddress()
 {
     QString URL = "https://1ex.trade/api/crypto-deposit-address/get?apikey=";
             URL += this->ExtradeApiKey;
-            URL += "&nonce="
+            URL += "&nonce=";
             URL += GetTimeMicros();
             URL += "&market=TX";
 
@@ -2737,8 +2737,8 @@ void Arbitrage::BuyYobitSellSafecex(QJsonObject yobit, QJsonObject safecex) {
 
     if (YobitPrice < SafecexPrice){
         if ((((SafecexPrice / YobitPrice) * 100) - 100) > percentGain) {
-            YobitBuy_Safecex(safecex, yobit);
-            SafecexSell_Yobit(safecex, yobit);
+            //YobitBuy_Safecex(safecex, yobit);
+            //SafecexSell_Yobit(safecex, yobit);
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);
             QString update = "Arb opportunity. ";
@@ -2783,8 +2783,8 @@ void Arbitrage::BuySafecexSellYobit(QJsonObject yobit, QJsonObject safecex) {
 
     if (SafecexPrice < YobitPrice){
         if ( (((YobitPrice / SafecexPrice) * 100) - 100) > percentGain) {
-            SafecexBuy_Yobit(safecex, yobit);
-            YobitSell_Safecex(safecex, yobit);
+            //SafecexBuy_Yobit(safecex, yobit);
+            //YobitSell_Safecex(safecex, yobit);
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);
             QString update = "Arb opportunity. ";
@@ -2799,7 +2799,7 @@ void Arbitrage::BuySafecexSellYobit(QJsonObject yobit, QJsonObject safecex) {
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);
             QString update = "Arb opportunity. ";
-                    update += str.number((((SafecexPrice / BittrexPrice) * 100) - 100),'i',8);
+                    update += str.number((((SafecexPrice / YobitPrice) * 100) - 100),'i',8);
                     update += "% gain for buying on Safecex(";
                     update += str.number(SafecexPrice, 'i', 8);
                     update += ") and selling on Yobit(";
@@ -3008,7 +3008,7 @@ void Arbitrage::BuyExtradeSellYobit(QJsonObject yobit, QJsonObject extrade) {
     }
 }
 // Extrade
-
+ UNFINISHED */
 
 
 
