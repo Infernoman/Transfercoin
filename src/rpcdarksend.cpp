@@ -135,8 +135,8 @@ Value masternode(const Array& params, bool fHelp)
 
     if (fHelp  ||
         (strCommand != "count" && strCommand != "current" && strCommand != "debug" && strCommand != "genkey" && strCommand != "enforce" && strCommand != "list" && strCommand != "list-conf"
-        	&& strCommand != "start" && strCommand != "start-alias" && strCommand != "start-many" && strCommand != "status" && strCommand != "stop" && strCommand != "stop-alias"
-                && strCommand != "stop-many" && strCommand != "winners" && strCommand != "connect" && strCommand != "outputs" && strCommand != "vote-many" && strCommand != "vote"))
+        	&& strCommand != "start" && strCommand != "start-alias" && strCommand != "start-many" && strCommand != "status" 
+                && strCommand != "winners" && strCommand != "connect" && strCommand != "outputs" && strCommand != "vote-many" && strCommand != "vote"))
         throw runtime_error(
                 "masternode \"command\"... ( \"passphrase\" )\n"
                 "Set of commands to execute masternode related actions\n"
@@ -156,153 +156,10 @@ Value masternode(const Array& params, bool fHelp)
                 "  start-alias  - Start single masternode by assigned alias configured in masternode.conf\n"
                 "  start-many   - Start all masternodes configured in masternode.conf\n"
                 "  status       - Print masternode status information\n"
-                "  stop         - Stop masternode configured in transfer.conf\n"
-                "  stop-alias   - Stop single masternode by assigned alias configured in masternode.conf\n"
-                "  stop-many    - Stop all masternodes configured in masternode.conf\n"
                 "  winners      - Print list of masternode winners\n"
                 "  vote-many    - Vote on a Transfer initiative\n"
                 "  vote         - Vote on a Transfer initiative\n"
                 );
-
-    if (strCommand == "stop")
-    {
-        if(!fMasterNode) return "you must set masternode=1 in the configuration";
-
-        if(pwalletMain->IsLocked()) {
-            SecureString strWalletPass;
-            strWalletPass.reserve(100);
-
-            if (params.size() == 2){
-                strWalletPass = params[1].get_str().c_str();
-            } else {
-                throw runtime_error(
-                    "Your wallet is locked, passphrase is required\n");
-            }
-
-            if(!pwalletMain->Unlock(strWalletPass)){
-                return "incorrect passphrase";
-            }
-        }
-
-        std::string errorMessage;
-        if(!activeMasternode.StopMasterNode(errorMessage)) {
-        	return "stop failed: " + errorMessage;
-        }
-        pwalletMain->Lock();
-
-        if(activeMasternode.status == MASTERNODE_STOPPED) return "successfully stopped masternode";
-        if(activeMasternode.status == MASTERNODE_NOT_CAPABLE) return "not capable masternode";
-
-        return "unknown";
-    }
-
-    if (strCommand == "stop-alias")
-    {
-	    if (params.size() < 2){
-			throw runtime_error(
-			"command needs at least 2 parameters\n");
-	    }
-
-	    std::string alias = params[1].get_str().c_str();
-
-    	if(pwalletMain->IsLocked()) {
-    		SecureString strWalletPass;
-    	    strWalletPass.reserve(100);
-
-			if (params.size() == 3){
-				strWalletPass = params[2].get_str().c_str();
-			} else {
-				throw runtime_error(
-				"Your wallet is locked, passphrase is required\n");
-			}
-
-			if(!pwalletMain->Unlock(strWalletPass)){
-				return "incorrect passphrase";
-			}
-        }
-
-    	bool found = false;
-
-		Object statusObj;
-		statusObj.push_back(Pair("alias", alias));
-
-    	BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
-    		if(mne.getAlias() == alias) {
-    			found = true;
-    			std::string errorMessage;
-    			bool result = activeMasternode.StopMasterNode(mne.getIp(), mne.getPrivKey(), errorMessage);
-
-				statusObj.push_back(Pair("result", result ? "successful" : "failed"));
-    			if(!result) {
-   					statusObj.push_back(Pair("errorMessage", errorMessage));
-   				}
-    			break;
-    		}
-    	}
-
-    	if(!found) {
-    		statusObj.push_back(Pair("result", "failed"));
-    		statusObj.push_back(Pair("errorMessage", "could not find alias in config. Verify with list-conf."));
-    	}
-
-    	pwalletMain->Lock();
-    	return statusObj;
-    }
-
-    if (strCommand == "stop-many")
-    {
-    	if(pwalletMain->IsLocked()) {
-			SecureString strWalletPass;
-			strWalletPass.reserve(100);
-
-			if (params.size() == 2){
-				strWalletPass = params[1].get_str().c_str();
-			} else {
-				throw runtime_error(
-				"Your wallet is locked, passphrase is required\n");
-			}
-
-			if(!pwalletMain->Unlock(strWalletPass)){
-				return "incorrect passphrase";
-			}
-		}
-
-		int total = 0;
-		int successful = 0;
-		int fail = 0;
-
-
-		Object resultsObj;
-
-		BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
-			total++;
-
-			std::string errorMessage;
-			bool result = activeMasternode.StopMasterNode(mne.getIp(), mne.getPrivKey(), errorMessage);
-
-			Object statusObj;
-			statusObj.push_back(Pair("alias", mne.getAlias()));
-			statusObj.push_back(Pair("result", result ? "successful" : "failed"));
-
-			if(result) {
-				successful++;
-			} else {
-				fail++;
-				statusObj.push_back(Pair("errorMessage", errorMessage));
-			}
-
-			resultsObj.push_back(Pair("status", statusObj));
-		}
-		pwalletMain->Lock();
-
-		Object returnObj;
-		returnObj.push_back(Pair("overall", "Successfully stopped " + boost::lexical_cast<std::string>(successful) + " masternodes, failed to stop " +
-				boost::lexical_cast<std::string>(fail) + ", total " + boost::lexical_cast<std::string>(total)));
-		returnObj.push_back(Pair("detail", resultsObj));
-
-		return returnObj;
-
-    }
 
     if (strCommand == "list")
     {
