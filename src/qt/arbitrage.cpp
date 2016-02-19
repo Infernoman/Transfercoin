@@ -22,6 +22,8 @@
 #include <QVariantMap>
 #include <QJsonArray>
 #include <QTime>
+#include <QMessageAuthenticationCode>
+#include <QPair>
 
 #include <openssl/hmac.h>
 #include <stdlib.h>
@@ -682,14 +684,14 @@ void Arbitrage::on_BittrexWithdrawBTCBtn_clicked()
 }
 QString Arbitrage::BuyTXBittrex(double Quantity, double Rate)
 {
-
+    QString nonce = GetNonce();
     QString str = "";
     QString URL = "https://bittrex.com/api/v1.1/market/";
             URL += "buylimit";
             URL += "?apikey=";
             URL += this->BittrexApiKey;
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
             URL += "&market=BTC-TX&quantity=";
             URL += str.number(Quantity,'i',8);
             URL += "&rate=";
@@ -823,14 +825,14 @@ void Arbitrage::BittrexBuy_Yobit(QJsonObject bittrex, QJsonObject yobit)
 }
 QString Arbitrage::SellTXBittrex(double Quantity, double Rate)
 {
-
+    QString nonce = GetNonce();
     QString str = "";
     QString URL = "https://bittrex.com/api/v1.1/market/";
             URL += "selllimit";
             URL += "?apikey=";
             URL += this->BittrexApiKey;
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
             URL += "&market=BTC-TX&quantity=";
             URL += str.number(Quantity,'i',8);
             URL += "&rate=";
@@ -966,7 +968,7 @@ void Arbitrage::BittrexSell_Yobit(QJsonObject bittrex, QJsonObject yobit)
 }
 QString Arbitrage::BittrexWithdraw(double Amount, QString Address, QString Coin)
 {
-
+    QString nonce = GetNonce();
     QString str = "";
     QString URL = "https://bittrex.com/api/v1.1/account/withdraw?apikey=";
             URL += this->BittrexApiKey;
@@ -977,7 +979,7 @@ QString Arbitrage::BittrexWithdraw(double Amount, QString Address, QString Coin)
             URL += "&address=";
             URL += Address;
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
 
     QString Response = sendBittrexRequest(URL);
      return Response;
@@ -990,11 +992,11 @@ QString Arbitrage::GetBittrexOrderBook()
 }
 QString Arbitrage::GetBittrexBalance(QString Currency)
 {
-
+    QString nonce = GetNonce();
     QString URL = "https://bittrex.com/api/v1.1/account/getbalance?apikey=";
             URL += this->BittrexApiKey;
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
             URL += "&currency=";
             URL += Currency;
 
@@ -1003,7 +1005,7 @@ QString Arbitrage::GetBittrexBalance(QString Currency)
 }
 QString Arbitrage::GetBittrexTXAddress()
 {
-
+    QString nonce = GetNonce();
     QString URL = "https://bittrex.com/api/v1.1/account/getdepositaddress?apikey=";
             URL += this->BittrexApiKey;
             URL += "&nonce=12345434&currency=TX";
@@ -1013,11 +1015,11 @@ QString Arbitrage::GetBittrexTXAddress()
 }
 QString Arbitrage::GetBittrexBTCAddress()
 {
-
+    QString nonce = GetNonce();
     QString URL = "https://bittrex.com/api/v1.1/account/getdepositaddress?apikey=";
             URL += this->BittrexApiKey;
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
             URL += "&currency=BTC";
 
     QString Response = sendBittrexRequest(URL);
@@ -1190,13 +1192,13 @@ void Arbitrage::on_SafecexWithdrawBTCBtn_clicked()
 }
 QString Arbitrage::BuyTXSafecex(double Quantity, double Rate)
 {
-
+    QString nonce = GetNonce();
     QString str = "";
     QString URL = "https://safecex.com/api/buylimit";
             URL += "?apikey=";
             URL += this->SafecexApiKey;
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
             URL += "&market=TX/BTC&amount=";
             URL += str.number(Quantity,'i',8);
             URL += "&price=";
@@ -1248,13 +1250,13 @@ void Arbitrage::SafecexBuy_Bittrex(QJsonObject bittrex, QJsonObject safecex)
 }
 QString Arbitrage::SellTXSafecex(double Amount, double Price)
 {
-
+    QString nonce = GetNonce();
     QString str = "";
     QString URL = "https://safecex.com/api/selllimit";
             URL += "?apikey=";
             URL += this->SafecexApiKey;
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
             URL += "&market=TX/BTC&amount=";
             URL += str.number(Amount,'i',8);
             URL += "&price=";
@@ -1306,7 +1308,7 @@ void Arbitrage::SafecexSell_Bittrex(QJsonObject bittrex, QJsonObject safecex)
 }
 QString Arbitrage::SafecexWithdraw(double Amount, QString Address, QString Coin)
 {
-
+    QString nonce = GetNonce();
     QString str = "";
     QString URL = "https://bittrex.com/api/v1.1/account/withdraw?apikey=";
             URL += this->SafecexApiKey;
@@ -1317,24 +1319,24 @@ QString Arbitrage::SafecexWithdraw(double Amount, QString Address, QString Coin)
             URL += "&address=";
             URL += Address;
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
 
     QString Response = sendSafecexRequest(URL);
      return Response;
 }
 QString Arbitrage::GetSafecexOrderBook()
 {
-
+    QString nonce = GetNonce();
     QString  Response = sendSafecexRequest("https://safecex.com/api/getorderbook?market=TX/BTC", false);
     return Response;
 }
 QString Arbitrage::GetSafecexBalance(QString Currency)
 {
-
+    QString nonce = GetNonce();
     QString URL = "https://safecex.com/api/getbalance?apikey=";
             URL += this->SafecexApiKey;
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
             URL += "&symbol=";
             URL += Currency;
 
@@ -1343,11 +1345,11 @@ QString Arbitrage::GetSafecexBalance(QString Currency)
 }
 QString Arbitrage::GetSafecexTXAddress()
 {
-
+    QString nonce = GetNonce();
     QString URL = "https://safecex.com/api/getbalance?apikey=";
             URL += this->SafecexApiKey;
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
             URL += "&symbol=TX";
 
     QString Response = sendSafecexRequest(URL);
@@ -1355,11 +1357,11 @@ QString Arbitrage::GetSafecexTXAddress()
 }
 QString Arbitrage::GetSafecexBTCAddress()
 {
-
+    QString nonce = GetNonce();
     QString URL = "https://safecex.com/api/getbalance?apikey=";
             URL += this->SafecexApiKey;
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
             URL += "&symbol=BTC";
 
     QString Response = sendSafecexRequest(URL);
@@ -1532,6 +1534,7 @@ void Arbitrage::on_ExtradeWithdrawBTCBtn_clicked()
 }
 QString Arbitrage::BuyTXExtrade(QString OrderType, QString OrderSide, double Quantity, double Rate)
 {
+    QString nonce = GetNonce();
     QJsonObject params;
     QString str = "";
     QString URL = "https://1ex.trade/api/orders/new";
@@ -1542,7 +1545,7 @@ QString Arbitrage::BuyTXExtrade(QString OrderType, QString OrderSide, double Qua
             URL += "&side=";
             URL += OrderSide;
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
             URL += "&market=TX&currency=BTC&amount=";
             URL += str.number(Quantity,'i',8);
             URL += "&limit_price=";
@@ -1598,6 +1601,7 @@ void Arbitrage::ExtradeBuy_Bittrex(QJsonObject bittrex, QJsonObject extrade)
 }
 QString Arbitrage::SellTXExtrade(QString OrderType, QString OrderSide, double Amount, double Price)
 {
+    QString nonce = GetNonce();
     QJsonObject params;
     QString str = "";
     QString URL = "https://1ex.trade/api/orders/new";
@@ -1608,7 +1612,7 @@ QString Arbitrage::SellTXExtrade(QString OrderType, QString OrderSide, double Am
             URL += "&side=";
             URL += OrderSide;
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
             URL += "&market=TX&currency=BTC&amount=";
             URL += str.number(Amount,'i',8);
             URL += "&limit_price=";
@@ -1619,6 +1623,7 @@ QString Arbitrage::SellTXExtrade(QString OrderType, QString OrderSide, double Am
 }
 QString Arbitrage::ExtradeWithdraw(double Amount, QString Address, QString Coin)
 {
+    QString nonce = GetNonce();
     QJsonObject params;
     QString str = "";
     QString URL = "https://1ex.trade/api/withdrawals/new?apikey=";
@@ -1630,7 +1635,7 @@ QString Arbitrage::ExtradeWithdraw(double Amount, QString Address, QString Coin)
             URL += "&address=";
             URL += Address;
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
 
     QString Response = sendExtradeRequest(URL, true);
      return Response;
@@ -1642,10 +1647,11 @@ QString Arbitrage::GetExtradeOrderBook()
 }
 QString Arbitrage::GetExtradeBalance(QString Currency)
 {
+    QString nonce = GetNonce();
     QString URL = "https://1ex.trade/api/balances-and-info?apikey=";
             URL += this->ExtradeApiKey;
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
             URL += "&currency=";
             URL += Currency;
 
@@ -1654,10 +1660,11 @@ QString Arbitrage::GetExtradeBalance(QString Currency)
 }
 QString Arbitrage::GetExtradeTXAddress()
 {
+    QString nonce = GetNonce();
     QString URL = "https://1ex.trade/api/crypto-deposit-address/get?apikey=";
             URL += this->ExtradeApiKey;
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
             URL += "&market=TX";
 
     QString Response = sendExtradeRequest(URL, true);
@@ -1665,10 +1672,11 @@ QString Arbitrage::GetExtradeTXAddress()
 }
 QString Arbitrage::GetExtradeBTCAddress()
 {
+    QString nonce = GetNonce();
     QString URL = "https://1ex.trade/api/crypto-deposit-address/get?apikey=";
             URL += this->ExtradeApiKey;
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
             URL += "&market=BTC";
 
     QString Response = sendExtradeRequest(URL, true);
@@ -1676,14 +1684,8 @@ QString Arbitrage::GetExtradeBTCAddress()
 }
 QString Arbitrage::sendExtradeRequest(QString url, bool post)
 {
-
     QString Response = "";
     QString Secret   = this->ExtradeSecretKey;
-    if (post)
-    {
-        url += "&signature=";
-        url += HMAC_SHA256_SIGNER(url,Secret).toStdString().c_str();
-    }
 
     // create custom temporary event loop on stack
     QEventLoop eventLoop;
@@ -1693,15 +1695,34 @@ QString Arbitrage::sendExtradeRequest(QString url, bool post)
     QObject::connect(&mgr, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
 
     // the HTTP request
-    QNetworkRequest req = QNetworkRequest(QUrl(url));
+    QNetworkRequest req;
+    if (post) {
+        req = QNetworkRequest(QUrl(url).url(QUrl::RemoveQuery));
+        req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    } else {
+        req = QNetworkRequest(QUrl(url));
+    }
 
-    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+     QNetworkReply *reply;
+     if (post) {
+         QUrlQuery params = QUrlQuery(QUrl(url));
+         QJsonObject json;
+         QPair<QString,QString> itm;
+         foreach (itm, params.queryItems()) {
+             // hack - nonce needs to be a double or 1ex.trade won't be happy
+             if (itm.first == "nonce") {
+                 json.insert(itm.first, itm.second.toDouble());
+             } else {
+                 json.insert(itm.first, itm.second);
+             }
+         }
+         QString b(QJsonDocument(json).toJson(QJsonDocument::Compact).toBase64());
+         json.insert("signature", HMAC_SHA256_SIGNER_GENERIC(b, Secret));
+         reply = mgr.post(req, QJsonDocument(json).toJson());
+     } else {
+         reply = mgr.get(req);
+     }
 
-    //data.append(QUrl::encodedQuery(strJson))
-
-    QSslConfiguration config = QSslConfiguration::defaultConfiguration();
-
-    QNetworkReply *reply = mgr.get(req);
     eventLoop.exec(); // blocks stack until "finished()" has been called
 
     if (reply->error() == QNetworkReply::NoError) {
@@ -1845,11 +1866,11 @@ void Arbitrage::on_YobitWithdrawBTCBtn_clicked()
 }
 QString Arbitrage::BuyTXYobit(double Quantity, double Rate)
 {
-
+    QString nonce = GetNonce();
     QString str = "";
     QString URL = "https://yobit.net/tapi?method=Trade";
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
             URL += "&pair=tx_btc&type=buy&amount=";
             URL += str.number(Quantity,'i',8);
             URL += "&rate=";
@@ -1942,7 +1963,7 @@ void Arbitrage::YobitBuy_Safecex(QJsonObject safecex, QJsonObject yobit)
 }
 QString Arbitrage::SellTXYobit(double Amount, double Price)
 {
-
+    QString nonce = GetNonce();
     QString str = "";
     QString URL = "https://yobit.net/tapi?method=Trade";
             URL += "&pair=tx_btc&type=buyamount=";
@@ -1950,7 +1971,7 @@ QString Arbitrage::SellTXYobit(double Amount, double Price)
             URL += "&rate=";
             URL += str.number(Price,'i',8);
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
 
     QString Response = sendSafecexRequest(URL);
     return Response;
@@ -2039,7 +2060,7 @@ void Arbitrage::YobitSell_Safecex(QJsonObject safecex, QJsonObject yobit)
 }
 QString Arbitrage::YobitWithdraw(double Amount, QString Address, QString Coin)
 {
-
+    QString nonce = GetNonce();
     QString str = "";
     QString URL = "https://yobit.net/tapi?method=WithdrawCoinsToAddress";
             URL += "&coinName=";
@@ -2049,7 +2070,7 @@ QString Arbitrage::YobitWithdraw(double Amount, QString Address, QString Coin)
             URL += "&address=";
             URL += Address;
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
 
     QString Response = sendYobitRequest(URL);
      return Response;
@@ -2060,31 +2081,42 @@ QString Arbitrage::GetYobitOrderBook()
     QString  Response = sendYobitRequest("https://yobit.net/api/3/depth/tx_btc", false);
     return Response;
 }
+QString Arbitrage::GetNonce()
+{
+    int64_t nonce = (GetTimeMillis() / 1000);
+    std::stringstream mySS;
+    mySS<<nonce;
+    string str = mySS.str();
+    return QString::fromStdString(str);
+}
 QString Arbitrage::GetYobitBalance()
 {
+    QString nonce = GetNonce();
     QString URL = "https://yobit.net/tapi?method=getInfo";
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
 
     QString Response = sendYobitRequest(URL);
      return Response;
 }
 QString Arbitrage::GetYobitTXAddress()
 {
+    QString nonce = GetNonce();
     QString URL = "https://yobit.net/tapi?method=GetDepositAddress";
             URL += "&coinName=tx";
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
 
     QString Response = sendYobitRequest(URL);
     return Response;
 }
 QString Arbitrage::GetYobitBTCAddress()
 {
+    QString nonce = GetNonce();
     QString URL = "https://yobit.net/tapi?method=GetDepositAddress";
             URL += "&coinName=btc";
             URL += "&nonce=";
-            URL += ((GetTimeMillis() - 2000) / 1000);
+            URL += nonce;
 
     QString Response = sendYobitRequest(URL);
     return Response;
@@ -2109,7 +2141,10 @@ QString Arbitrage::sendYobitRequest(QString url, bool post)
 
     //make this conditional,depending if we are using private api call
     if (post) {
-        req.setRawHeader("Sign",HMAC_SHA512_SIGNER_YOBIT(url,Secret).toStdString().c_str()); //set header for yobit
+        QUrlQuery params = QUrlQuery(QUrl(url));
+        QString b = params.toString();
+        QMessageBox::information(this,"Test",b);
+        req.setRawHeader("Sign",HMAC_SHA512_SIGNER_YOBIT(b,Secret).toStdString().c_str()); //set header for yobit
         req.setRawHeader("Key",this->YobitApiKey.toStdString().c_str()); //set header for yobit
     }
 
@@ -2187,39 +2222,10 @@ QString Arbitrage::HMAC_SHA512_SIGNER(QString UrlToSign, QString Secret)
 
     return retval;
 }
-// Returns the relative Request-URI from url. For example, given the url
-// "http://www.google.com/search?q=xyz", it will return "/search?q=xyz".
-//
-// url need not be prefixed with a protocol; i.e. "google.com" is valid.
-//
-// If url contains a protocol (i.e. "http://"), the Request-URI begins with the
-// first "/" after the protocol. Otherwise, the Request-URI begins with the
-// first "/".
-//
-// If url does not contain a Request-URI, its Request-URI is "/", the server
-// root.
-string Arbitrage::ParseRequestUri(std::string url) {
-  const std::string protocol_identifier("://");
-
-  std::size_t pos = url.find(protocol_identifier);
-
-  if (pos != std::string::npos)
-    pos = url.find_first_of("?", pos + protocol_identifier.length());
-  else
-    pos = url.find_first_of("?");
-
-  if (pos != std::string::npos)
-    return url.substr(pos);
-
-  return "/";
-}
 QString Arbitrage::HMAC_SHA512_SIGNER_YOBIT(QString UrlToSign, QString Secret)
 {
 
     QString retval = "";
-    string test = ParseRequestUri(UrlToSign.toStdString());
-    UrlToSign = QString::fromStdString(test);
-
     QByteArray byteArray = UrlToSign.toUtf8();
     const char* URL = byteArray.constData();
 
@@ -2244,36 +2250,11 @@ QString Arbitrage::HMAC_SHA512_SIGNER_YOBIT(QString UrlToSign, QString Secret)
 
     return retval;
 }
-QString Arbitrage::HMAC_SHA256_SIGNER(QString UrlToSign, QString Secret)
+QString Arbitrage::HMAC_SHA256_SIGNER_GENERIC(QString string, QString secret)
 {
-
-    QString retval = "";
-    string test = ParseRequestUri(UrlToSign.toStdString());
-    UrlToSign = QString::fromStdString(test);
-
-    QByteArray byteArray = UrlToSign.toUtf8();
-    const char* URL = byteArray.toBase64();
-
-    QByteArray byteArrayB = Secret.toUtf8();
-    const char* Secretkey = byteArrayB.constData();
-
-    const EVP_MD *md = EVP_sha256();
-    unsigned char* digest = NULL;
-
-    // Using sha512 hash engine here.
-    digest = HMAC(md,  Secretkey, strlen( Secretkey), (unsigned char*) URL, strlen( URL), NULL, NULL);
-
-    // Be careful of the length of string with the choosen hash engine. SHA256 produces a 32-byte hash value which rendered as 64 characters.
-    // Change the length accordingly with your choosen hash engine
-    char mdString[65] = { 0 };
-
-    for(int i = 0; i < 32; i++){
-        sprintf(&mdString[i*2], "%02x", (unsigned int)digest[i]);
-    }
-    retval = mdString;
-    //QMessageBox::information(this,"HMAC Digest","HMAC_SHA256_SIGNER: " + retval);
-
-    return retval;
+    const char* data = QByteArray(string.toUtf8()).constData();
+    const char* s = QByteArray(secret.toUtf8()).constData();
+    return QMessageAuthenticationCode::hash(data, s, QCryptographicHash::Sha256).toHex();
 }
 QJsonObject Arbitrage::GetResultObjectFromJSONObject(QString response)
 {

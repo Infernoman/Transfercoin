@@ -170,9 +170,9 @@ private slots:
 
     QString BittrexTimeStampToReadable(QString DateTime);
     QString HMAC_SHA512_SIGNER(QString UrlToSign,QString Secretkey);
-    std::string ParseRequestUri(std::string url);
+    QString GetNonce();
     QString HMAC_SHA512_SIGNER_YOBIT(QString UrlToSign,QString Secretkey);
-    QString HMAC_SHA256_SIGNER(QString UrlToSign,QString Secretkey);
+    QString HMAC_SHA256_SIGNER_GENERIC(QString string, QString secret);
     QJsonObject GetResultObjectFromJSONObject(QString response);
     QJsonObject GetResultObjectFromJSONArray(QString response);
     QJsonArray  GetResultArrayFromJSONObject(QString response);
