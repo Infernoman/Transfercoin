@@ -1701,25 +1701,25 @@ QString Arbitrage::sendExtradeRequest(QString url, bool post)
         req = QNetworkRequest(QUrl(url));
     }
 
-     QNetworkReply *reply;
-     if (post) {
-         QUrlQuery params = QUrlQuery(QUrl(url));
-         QJsonObject json;
-         QPair<QString,QString> itm;
-         foreach (itm, params.queryItems()) {
-             // hack - nonce needs to be a double or 1ex.trade won't be happy
-             if (itm.first == "nonce") {
-                 json.insert(itm.first, itm.second.toDouble());
-             } else {
-                 json.insert(itm.first, itm.second);
-             }
-         }
-         QString b(QJsonDocument(json).toJson(QJsonDocument::Compact).toBase64());
-         json.insert("signature", HMAC_SHA256_SIGNER(b, Secret));
-         reply = mgr.post(req, QJsonDocument(json).toJson());
-     } else {
-         reply = mgr.get(req);
-     }
+    QNetworkReply *reply;
+    if (post) {
+        QUrlQuery params = QUrlQuery(QUrl(url));
+        QJsonObject json;
+        QPair<QString,QString> itm;
+        foreach (itm, params.queryItems()) {
+            // hack - nonce needs to be a double or 1ex.trade won't be happy
+            if (itm.first == "nonce") {
+                json.insert(itm.first, itm.second.toDouble());
+            } else {
+                json.insert(itm.first, itm.second);
+            }
+        }
+        QString b(QJsonDocument(json).toJson(QJsonDocument::Compact).toBase64());
+        json.insert("signature", HMAC_SHA256_SIGNER(b, Secret));
+        reply = mgr.post(req, QJsonDocument(json).toJson());
+    } else {
+        reply = mgr.get(req);
+    }
 
     eventLoop.exec(); // blocks stack until "finished()" has been called
 
