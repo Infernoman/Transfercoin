@@ -1603,7 +1603,7 @@ QString Arbitrage::SellTXExtrade(QString OrderType, QString OrderSide, double Am
     QJsonObject params;
     QString str = "";
     QString URL = "https://1ex.trade/api/orders/new";
-            URL += "?apikey=";
+            URL += "?api_key=";
             URL += this->ExtradeApiKey;
             URL += "&type=";
             URL += OrderType;
@@ -1624,7 +1624,7 @@ QString Arbitrage::ExtradeWithdraw(double Amount, QString Address, QString Coin)
     QString nonce = GetNonce();
     QJsonObject params;
     QString str = "";
-    QString URL = "https://1ex.trade/api/withdrawals/new?apikey=";
+    QString URL = "https://1ex.trade/api/withdrawals/new?api_key=";
             URL += this->ExtradeApiKey;
             URL += "&currency=";
             URL += Coin;
@@ -1646,7 +1646,7 @@ QString Arbitrage::GetExtradeOrderBook()
 QString Arbitrage::GetExtradeBalance(QString Currency)
 {
     QString nonce = GetNonce();
-    QString URL = "https://1ex.trade/api/balances-and-info?apikey=";
+    QString URL = "https://1ex.trade/api/balances-and-info?api_key=";
             URL += this->ExtradeApiKey;
             URL += "&nonce=";
             URL += nonce;
@@ -1659,7 +1659,7 @@ QString Arbitrage::GetExtradeBalance(QString Currency)
 QString Arbitrage::GetExtradeTXAddress()
 {
     QString nonce = GetNonce();
-    QString URL = "https://1ex.trade/api/crypto-deposit-address/get?apikey=";
+    QString URL = "https://1ex.trade/api/crypto-deposit-address/get?api_key=";
             URL += this->ExtradeApiKey;
             URL += "&nonce=";
             URL += nonce;
@@ -1671,7 +1671,7 @@ QString Arbitrage::GetExtradeTXAddress()
 QString Arbitrage::GetExtradeBTCAddress()
 {
     QString nonce = GetNonce();
-    QString URL = "https://1ex.trade/api/crypto-deposit-address/get?apikey=";
+    QString URL = "https://1ex.trade/api/crypto-deposit-address/get?api_key=";
             URL += this->ExtradeApiKey;
             URL += "&nonce=";
             URL += nonce;
