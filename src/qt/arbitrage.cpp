@@ -2135,18 +2135,20 @@ QString Arbitrage::sendYobitRequest(QString url, bool post)
     // the HTTP request
     QNetworkRequest req = QNetworkRequest(QUrl(url));
 
-    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
     //make this conditional,depending if we are using private api call
+    QNetworkReply *reply;
     if (post) {
+        req.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
         QUrlQuery params = QUrlQuery(QUrl(url));
         QString b = params.toString();
         QMessageBox::information(this,"Test",b);
         req.setRawHeader("Key",this->YobitApiKey.toStdString().c_str()); //set header for yobit
         req.setRawHeader("Sign",HMAC_SHA512_SIGNER_YOBIT(b,Secret).toStdString().c_str()); //set header for yobit
+        reply = mgr.post(req, params.query(QUrl::FullyEncoded).toUtf8());
+    } else {
+        reply = mgr.get(req);
     }
 
-    QNetworkReply *reply = mgr.get(req);
     eventLoop.exec(); // blocks stack until "finished()" has been called
 
     if (reply->error() == QNetworkReply::NoError) {
