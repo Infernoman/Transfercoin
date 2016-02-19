@@ -1906,12 +1906,12 @@
           </font>
          </property>
          <property name="text">
-          <string>SafeCex API Key</string>
+          <string>Bittrex API Key</string>
          </property>
         </widget>
        </item>
        <item row="0" column="1" colspan="3">
-        <widget class="QLineEdit" name="SafecexApiKeyInput">
+        <widget class="QLineEdit" name="BittrexApiKeyInput">
          <property name="text">
           <string/>
          </property>
@@ -1939,12 +1939,12 @@
           </font>
          </property>
          <property name="text">
-          <string>SafeCex Secret</string>
+          <string>Bittrex Secret</string>
          </property>
         </widget>
        </item>
        <item row="1" column="1" colspan="3">
-        <widget class="QLineEdit" name="SafecexSecretKeyInput"/>
+        <widget class="QLineEdit" name="BittrexSecretKeyInput"/>
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="label_22">
@@ -1955,12 +1955,12 @@
           </font>
          </property>
          <property name="text">
-          <string>Bittrex API Key</string>
+          <string>SafeCex API Key</string>
          </property>
         </widget>
        </item>
        <item row="2" column="1" colspan="3">
-        <widget class="QLineEdit" name="BittrexApiKeyInput"/>
+        <widget class="QLineEdit" name="SafecexApiKeyInput"/>
        </item>
        <item row="3" column="0">
         <widget class="QLabel" name="label_23">
@@ -1971,12 +1971,12 @@
           </font>
          </property>
          <property name="text">
-          <string>Bittrex Secret</string>
+          <string>SafeCex Secret</string>
          </property>
         </widget>
        </item>
        <item row="3" column="1" colspan="3">
-        <widget class="QLineEdit" name="BittrexSecretKeyInput"/>
+        <widget class="QLineEdit" name="SafecexSecretKeyInput"/>
        </item>
        <item row="4" column="0">
         <widget class="QLabel" name="label_24">

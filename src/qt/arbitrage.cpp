@@ -22,8 +22,6 @@
 #include <QVariantMap>
 #include <QJsonArray>
 #include <QTime>
-#include <QMessageAuthenticationCode>
-#include <QPair>
 
 #include <openssl/hmac.h>
 #include <stdlib.h>
@@ -1717,7 +1715,7 @@ QString Arbitrage::sendExtradeRequest(QString url, bool post)
              }
          }
          QString b(QJsonDocument(json).toJson(QJsonDocument::Compact).toBase64());
-         json.insert("signature", HMAC_SHA256_SIGNER_GENERIC(b, Secret));
+         json.insert("signature", HMAC_SHA256_SIGNER(b, Secret));
          reply = mgr.post(req, QJsonDocument(json).toJson());
      } else {
          reply = mgr.get(req);
@@ -2144,8 +2142,8 @@ QString Arbitrage::sendYobitRequest(QString url, bool post)
         QUrlQuery params = QUrlQuery(QUrl(url));
         QString b = params.toString();
         QMessageBox::information(this,"Test",b);
-        req.setRawHeader("Sign",HMAC_SHA512_SIGNER_YOBIT(b,Secret).toStdString().c_str()); //set header for yobit
         req.setRawHeader("Key",this->YobitApiKey.toStdString().c_str()); //set header for yobit
+        req.setRawHeader("Sign",HMAC_SHA512_SIGNER_YOBIT(b,Secret).toStdString().c_str()); //set header for yobit
     }
 
     QNetworkReply *reply = mgr.get(req);
@@ -2250,11 +2248,34 @@ QString Arbitrage::HMAC_SHA512_SIGNER_YOBIT(QString UrlToSign, QString Secret)
 
     return retval;
 }
-QString Arbitrage::HMAC_SHA256_SIGNER_GENERIC(QString string, QString secret)
+QString Arbitrage::HMAC_SHA256_SIGNER(QString UrlToSign, QString Secret)
 {
-    const char* data = QByteArray(string.toUtf8()).constData();
-    const char* s = QByteArray(secret.toUtf8()).constData();
-    return QMessageAuthenticationCode::hash(data, s, QCryptographicHash::Sha256).toHex();
+
+    QString retval = "";
+
+    QByteArray byteArray = UrlToSign.toUtf8();
+    const char* URL = byteArray.constData();
+
+    QByteArray byteArrayB = Secret.toUtf8();
+    const char* Secretkey = byteArrayB.constData();
+
+    const EVP_MD *md = EVP_sha256();
+    unsigned char* digest = NULL;
+
+    // Using sha512 hash engine here.
+    digest = HMAC(md,  Secretkey, strlen( Secretkey), (unsigned char*) URL, strlen( URL), NULL, NULL);
+
+    // Be careful of the length of string with the choosen hash engine. SHA256 produces a 32-byte hash value which rendered as 64 characters.
+    // Change the length accordingly with your choosen hash engine
+    char mdString[65] = { 0 };
+
+    for(int i = 0; i < 32; i++){
+        sprintf(&mdString[i*2], "%02x", (unsigned int)digest[i]);
+    }
+    retval = mdString;
+    QMessageBox::information(this,"HMAC Digest","HMAC_SHA256_SIGNER: " + retval);
+
+    return retval;
 }
 QJsonObject Arbitrage::GetResultObjectFromJSONObject(QString response)
 {

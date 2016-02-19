@@ -172,7 +172,7 @@ private slots:
     QString HMAC_SHA512_SIGNER(QString UrlToSign,QString Secretkey);
     QString GetNonce();
     QString HMAC_SHA512_SIGNER_YOBIT(QString UrlToSign,QString Secretkey);
-    QString HMAC_SHA256_SIGNER_GENERIC(QString string, QString secret);
+    QString HMAC_SHA256_SIGNER(QString UrlToSign,QString Secretkey);
     QJsonObject GetResultObjectFromJSONObject(QString response);
     QJsonObject GetResultObjectFromJSONArray(QString response);
     QJsonArray  GetResultArrayFromJSONObject(QString response);
