@@ -1603,7 +1603,7 @@ QString Arbitrage::SellTXExtrade(QString OrderType, QString OrderSide, double Am
     QJsonObject params;
     QString str = "";
     QString URL = "https://1ex.trade/api/orders/new";
-            URL += "?apikey=";
+            URL += "?api_key=";
             URL += this->ExtradeApiKey;
             URL += "&type=";
             URL += OrderType;
@@ -1624,7 +1624,7 @@ QString Arbitrage::ExtradeWithdraw(double Amount, QString Address, QString Coin)
     QString nonce = GetNonce();
     QJsonObject params;
     QString str = "";
-    QString URL = "https://1ex.trade/api/withdrawals/new?apikey=";
+    QString URL = "https://1ex.trade/api/withdrawals/new?api_key=";
             URL += this->ExtradeApiKey;
             URL += "&currency=";
             URL += Coin;
@@ -1646,7 +1646,7 @@ QString Arbitrage::GetExtradeOrderBook()
 QString Arbitrage::GetExtradeBalance(QString Currency)
 {
     QString nonce = GetNonce();
-    QString URL = "https://1ex.trade/api/balances-and-info?apikey=";
+    QString URL = "https://1ex.trade/api/balances-and-info?api_key=";
             URL += this->ExtradeApiKey;
             URL += "&nonce=";
             URL += nonce;
@@ -1659,7 +1659,7 @@ QString Arbitrage::GetExtradeBalance(QString Currency)
 QString Arbitrage::GetExtradeTXAddress()
 {
     QString nonce = GetNonce();
-    QString URL = "https://1ex.trade/api/crypto-deposit-address/get?apikey=";
+    QString URL = "https://1ex.trade/api/crypto-deposit-address/get?api_key=";
             URL += this->ExtradeApiKey;
             URL += "&nonce=";
             URL += nonce;
@@ -1671,7 +1671,7 @@ QString Arbitrage::GetExtradeTXAddress()
 QString Arbitrage::GetExtradeBTCAddress()
 {
     QString nonce = GetNonce();
-    QString URL = "https://1ex.trade/api/crypto-deposit-address/get?apikey=";
+    QString URL = "https://1ex.trade/api/crypto-deposit-address/get?api_key=";
             URL += this->ExtradeApiKey;
             URL += "&nonce=";
             URL += nonce;
@@ -1701,25 +1701,25 @@ QString Arbitrage::sendExtradeRequest(QString url, bool post)
         req = QNetworkRequest(QUrl(url));
     }
 
-     QNetworkReply *reply;
-     if (post) {
-         QUrlQuery params = QUrlQuery(QUrl(url));
-         QJsonObject json;
-         QPair<QString,QString> itm;
-         foreach (itm, params.queryItems()) {
-             // hack - nonce needs to be a double or 1ex.trade won't be happy
-             if (itm.first == "nonce") {
-                 json.insert(itm.first, itm.second.toDouble());
-             } else {
-                 json.insert(itm.first, itm.second);
-             }
-         }
-         QString b(QJsonDocument(json).toJson(QJsonDocument::Compact).toBase64());
-         json.insert("signature", HMAC_SHA256_SIGNER(b, Secret));
-         reply = mgr.post(req, QJsonDocument(json).toJson());
-     } else {
-         reply = mgr.get(req);
-     }
+    QNetworkReply *reply;
+    if (post) {
+        QUrlQuery params = QUrlQuery(QUrl(url));
+        QJsonObject json;
+        QPair<QString,QString> itm;
+        foreach (itm, params.queryItems()) {
+            // hack - nonce needs to be a double or 1ex.trade won't be happy
+            if (itm.first == "nonce") {
+                json.insert(itm.first, itm.second.toDouble());
+            } else {
+                json.insert(itm.first, itm.second);
+            }
+        }
+        QString b(QJsonDocument(json).toJson(QJsonDocument::Compact).toBase64());
+        json.insert("signature", HMAC_SHA256_SIGNER(b, Secret));
+        reply = mgr.post(req, QJsonDocument(json).toJson());
+    } else {
+        reply = mgr.get(req);
+    }
 
     eventLoop.exec(); // blocks stack until "finished()" has been called
 
@@ -2135,18 +2135,20 @@ QString Arbitrage::sendYobitRequest(QString url, bool post)
     // the HTTP request
     QNetworkRequest req = QNetworkRequest(QUrl(url));
 
-    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
     //make this conditional,depending if we are using private api call
+    QNetworkReply *reply;
     if (post) {
+        req.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
         QUrlQuery params = QUrlQuery(QUrl(url));
         QString b = params.toString();
         QMessageBox::information(this,"Test",b);
         req.setRawHeader("Key",this->YobitApiKey.toStdString().c_str()); //set header for yobit
         req.setRawHeader("Sign",HMAC_SHA512_SIGNER_YOBIT(b,Secret).toStdString().c_str()); //set header for yobit
+        reply = mgr.post(req, params.query(QUrl::FullyEncoded).toUtf8());
+    } else {
+        reply = mgr.get(req);
     }
 
-    QNetworkReply *reply = mgr.get(req);
     eventLoop.exec(); // blocks stack until "finished()" has been called
 
     if (reply->error() == QNetworkReply::NoError) {
