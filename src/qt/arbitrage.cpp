@@ -49,8 +49,8 @@ Arbitrage::Arbitrage(QWidget *parent) :
     // SafeCex Balance page
 
     // Extrade Balance Page
-    ui->ExtradeBTCBalance->setTextFormat(Qt::RichText);ui->ExtradeBTCAvailable->setTextFormat(Qt::RichText);ui->ExtradeBTCPending->setTextFormat(Qt::RichText);
-    ui->ExtradeTXBalance->setTextFormat(Qt::RichText);ui->ExtradeTXAvailable->setTextFormat(Qt::RichText);ui->ExtradeTXPending->setTextFormat(Qt::RichText);
+    ui->ExtradeBTCAvailable->setTextFormat(Qt::RichText);
+    ui->ExtradeTXAvailable->setTextFormat(Qt::RichText);
     // Extrade Balance page
 
     //Set tabs to inactive
@@ -72,9 +72,9 @@ Arbitrage::Arbitrage(QWidget *parent) :
 
     // Listen for keypress
     connect(ui->PasswordInput, SIGNAL(returnPressed()),ui->LoadKeys,SIGNAL(clicked()));
-    connect(ui->BittrexCheckbox, SIGNAL(clicked(bool)), this, SLOT(BittrexToggled(bool)));
-    connect(ui->SafecexCheckbox, SIGNAL(clicked(bool)), this, SLOT(SafecexToggled(bool)));
-    connect(ui->ExtradeCheckbox, SIGNAL(clicked(bool)), this, SLOT(ExtradeToggled(bool)));
+    connect(ui->BittrexCheckbox, SIGNAL(stateChanged(int)), this, SLOT(BittrexToggled(int)));
+    connect(ui->SafecexCheckbox, SIGNAL(stateChanged(int)), this, SLOT(SafecexToggled(int)));
+    connect(ui->ExtradeCheckbox, SIGNAL(stateChanged(int)), this, SLOT(ExtradeToggled(int)));
     // Listen for keypress
 
 
@@ -109,25 +109,33 @@ Arbitrage::Arbitrage(QWidget *parent) :
     /*Account History Table Init*/
 }
 
-void Arbitrage::BittrexToggled(bool clicked)
+void Arbitrage::BittrexToggled(int state)
 {
-    if (clicked)
+    if (state == Qt::Checked)
         this->EnableBittrex = true;
+    else
+        this->EnableBittrex = false;
 }
-void Arbitrage::SafecexToggled(bool clicked)
+void Arbitrage::SafecexToggled(int state)
 {
-    if (clicked)
+    if (state == Qt::Checked)
         this->EnableSafecex = true;
+    else
+        this->EnableSafecex = false;
 }
-void Arbitrage::ExtradeToggled(bool clicked)
+void Arbitrage::ExtradeToggled(int state)
 {
-    if (clicked)
+    if (state == Qt::Checked)
         this->EnableExtrade = true;
+    else
+        this->EnableExtrade = false;
 }
-void Arbitrage::YobitToggled(bool clicked)
+void Arbitrage::YobitToggled(int state)
 {
-    if (clicked)
+    if (state == Qt::Checked)
         this->EnableYobit = true;
+    else
+        this->EnableYobit = false;
 }
 
 void Arbitrage::InitArbitrage()
@@ -211,26 +219,20 @@ void Arbitrage::DisplayYobitBalance(QLabel &BalanceLabel, QString Currency, QStr
 
     BalanceLabel.setText("<span style='font-weight:bold; font-size:11px; color:green'>" + str.number( ResponseObject.value("return").toObject().value("funds").toObject().value(Currency).toDouble(),'i',8) + "</span> " + Currency);
 }
-void Arbitrage::DisplayExtradeBalance(QLabel &BalanceLabel, QLabel &Available, QLabel &Pending, QString Currency, QString Response)
+void Arbitrage::DisplayExtradeBalance(QLabel &Available, QString Currency, QString Response)
 {// update display labels
 
     QString str;
 
-    BalanceLabel.setTextFormat(Qt::RichText);
     Available.setTextFormat(Qt::RichText);
-    Pending.setTextFormat(Qt::RichText);
 
     //Set the labels, parse the json result to get values.
     QJsonDocument jsonResponse = QJsonDocument::fromJson(Response.toUtf8());          //get json from str.
     QJsonObject ResponseObject = jsonResponse.object();                              //get json obj
 
-    double balance = ResponseObject.value(QString("available["+Currency+"]")).toDouble();
-    double available = ResponseObject.value(QString("available["+Currency+"]")).toDouble();
-    double pending = ResponseObject.value(QString("available["+Currency+"]")).toDouble();
+    double available = ResponseObject.value("balances-and-info").toObject().value("available").toObject().value(Currency).toDouble();
 
-    BalanceLabel.setText("<span style='font-weight:bold; font-size:11px; color:green'>" + str.number( balance,'i',8) + "</span> " + Currency);
     Available.setText("<span style='font-weight:bold; font-size:11px; color:green'>" + str.number( available,'i',8) + "</span> " +Currency);
-    Pending.setText("<span style='font-weight:bold; font-size:11px; color:green'>" + str.number( pending,'i',8) + "</span> " +Currency);
 }
 void Arbitrage::ActionsOnSwitch(int index = -1)
 {
@@ -271,14 +273,13 @@ void Arbitrage::ActionsOnSwitch(int index = -1)
                 break;
 
                 case 3: // Extrade Balance
-                    Response = GetExtradeBalance("BTC");
+                    Response = GetExtradeBalance();
                     if(Response.size() > 0 && Response != "Error"){
-                        DisplayExtradeBalance(*ui->ExtradeBTCBalance,*ui->ExtradeBTCAvailable,*ui->ExtradeBTCPending, QString::fromUtf8("BTC"),Response);
+                        DisplayExtradeBalance(*ui->ExtradeBTCAvailable, QString::fromUtf8("BTC"),Response);
                     }
 
-                    Response = GetExtradeBalance("TX");
                     if(Response.size() > 0 && Response != "Error"){
-                        DisplayExtradeBalance(*ui->ExtradeTXBalance,*ui->ExtradeTXAvailable,*ui->ExtradeTXPending, QString::fromUtf8("TX"),Response);
+                        DisplayExtradeBalance(*ui->ExtradeTXAvailable, QString::fromUtf8("TX"),Response);
                     }
                 break;
 
@@ -359,7 +360,7 @@ void Arbitrage::on_UpdateKeys_clicked(bool Save, bool Load)
     //if (ui->ExtradeApiKeyInput->text() != "" && ui->ExtradeSecretKeyInput->text() != ""){
         this->ExtradeApiKey    = ui->ExtradeApiKeyInput->text();
         this->ExtradeSecretKey = ui->ExtradeSecretKeyInput->text();
-        EjsonResponse = QJsonDocument::fromJson(GetExtradeBalance("TX").toUtf8()); //get json from str.
+        EjsonResponse = QJsonDocument::fromJson(GetExtradeBalance().toUtf8()); //get json from str.
         EResponseObject = EjsonResponse.object();                                 //get json obj
     //}
     if (ui->YobitApiKeyInput->text() != "" && ui->YobitSecretKeyInput->text() != ""){
@@ -389,8 +390,8 @@ void Arbitrage::on_UpdateKeys_clicked(bool Save, bool Load)
         ui->ExtradeLabel->setVisible(true);
         ui->ExtradeCheckbox->setVisible(true);
     }
-    bool test4 = YResponseObject.value("success").toBool();
-    if (test4 == true && total <= WalletCheck) {
+    bool test4 = YResponseObject.value("success").toInt();
+    if (test4 == 1 && total <= WalletCheck) {
         total++;
         ui->YobitApiKeyInput->setEchoMode(QLineEdit::Password);
         ui->YobitSecretKeyInput->setEchoMode(QLineEdit::Password);
@@ -705,7 +706,7 @@ void Arbitrage::BittrexBuy_Extrade(QJsonObject bittrex, QJsonObject extrade)
     RowCount = ui->DebugHistory->rowCount();
     ui->DebugHistory->insertRow(RowCount);
     double bittrexQ = bittrex.value(QString("result")).toObject().value("sell").toArray().first().toObject().value("Quantity").toDouble();
-    double extradeQ = extrade.value(QString("order-book")).toObject().value("bid").toArray().first().toObject().value("order_amount").toString().toDouble();
+    double extradeQ = extrade.value("order-book").toObject().value("bid").toArray().first().toObject().value("order_amount").toDouble();
     double price = bittrex.value(QString("result")).toObject().value("sell").toArray().first().toObject().value("Rate").toDouble();
 
     if (extradeQ > bittrexQ) {
@@ -720,7 +721,7 @@ void Arbitrage::BittrexBuy_Extrade(QJsonObject bittrex, QJsonObject extrade)
             ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
             UpdateArbTable("Bittrex", amount, price, false);
         } else {
-            QString update = "ExtradeBuy - Error: "+ResponseObject.value(QString("errors")).toString();
+            QString update = "BittrexBuy_Extrade - Error: "+ResponseObject.value(QString("errors")).toString();
             ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
         }
     } else {
@@ -734,7 +735,7 @@ void Arbitrage::BittrexBuy_Extrade(QJsonObject bittrex, QJsonObject extrade)
             ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
             UpdateArbTable("Bittrex", amount, price, false);
         } else {
-            QString update = "BittrexBuy - Error: "+ResponseObject.value("errors").toString();
+            QString update = "BittrexBuy_Extrade - Error: "+ResponseObject.value("errors").toString();
             ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
         }
     }
@@ -839,7 +840,6 @@ QString Arbitrage::SellTXBittrex(double Quantity, double Rate)
     QString Response = sendBittrexRequest(URL);
     return Response;
 }
-/* UNFINISHED
 void Arbitrage::BittrexSell_Extrade(QJsonObject bittrex, QJsonObject extrade)
 {
     QString str = "";
@@ -847,7 +847,7 @@ void Arbitrage::BittrexSell_Extrade(QJsonObject bittrex, QJsonObject extrade)
     RowCount = ui->DebugHistory->rowCount();
     ui->DebugHistory->insertRow(RowCount);
     double bittrexQ = bittrex.value(QString("result")).toObject().value("buy").toArray().first().toObject().value("Quantity").toDouble();
-    double extradeQ = extrade.value("bids").toArray().first().toObject().value("amount").toString().toDouble();
+    double extradeQ = extrade.value("order-book").toObject().value("ask").toArray().first().toObject().value("order_amount").toDouble();
     double price = bittrex.value(QString("result")).toObject().value("buy").toArray().first().toObject().value("Rate").toDouble();
 
     if (bittrexQ > extradeQ) {
@@ -868,7 +868,7 @@ void Arbitrage::BittrexSell_Extrade(QJsonObject bittrex, QJsonObject extrade)
     } else {
         double amount = bittrexQ;
 
-        QString Response = SellTXSafecex(amount, price);
+        QString Response = SellTXBittrex(amount, price);
         QJsonDocument jsonResponse = QJsonDocument::fromJson(Response.toUtf8());          //get json from str.
         QJsonObject ResponseObject = jsonResponse.object();                              //get json obj
         if (ResponseObject.value("errors").toBool() == false) {
@@ -881,15 +881,14 @@ void Arbitrage::BittrexSell_Extrade(QJsonObject bittrex, QJsonObject extrade)
         }
     }
 }
-*/
 void Arbitrage::BittrexSell_Safecex(QJsonObject bittrex, QJsonObject safecex)
 {
     QString str = "";
     int RowCount = 0;
     RowCount = ui->DebugHistory->rowCount();
     ui->DebugHistory->insertRow(RowCount);
-    double bittrexQ = bittrex.value(QString("result")).toObject().value("buy").toArray().first().toObject().value("Quantity").toDouble();
-    double safecexQ = safecex.value("bids").toArray().first().toObject().value("amount").toString().toDouble();
+    double bittrexQ = bittrex.value(QString("result")).toObject().value("sell").toArray().first().toObject().value("Quantity").toDouble();
+    double safecexQ = safecex.value("asks").toArray().first().toObject().value("amount").toString().toDouble();
     double price = bittrex.value(QString("result")).toObject().value("buy").toArray().first().toObject().value("Rate").toDouble();
 
     if (bittrexQ > safecexQ) {
@@ -899,7 +898,7 @@ void Arbitrage::BittrexSell_Safecex(QJsonObject bittrex, QJsonObject safecex)
         QJsonDocument jsonResponse = QJsonDocument::fromJson(Response.toUtf8());          //get json from str.
         QJsonObject ResponseObject = jsonResponse.object();                              //get json obj
 
-        if (ResponseObject.value("errors").toBool() == false) {
+        if (ResponseObject.value("status").toString() == "ok") {
             QString update = "Sold "+str.number(amount, 'i', 8)+" Transfercoin for "+str.number(price, 'i', 8)+" on Bittrex";
             ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
             UpdateArbTable("Bittrex", amount, price, true);
@@ -910,10 +909,10 @@ void Arbitrage::BittrexSell_Safecex(QJsonObject bittrex, QJsonObject safecex)
     } else {
         double amount = bittrexQ;
 
-        QString Response = SellTXSafecex(amount, price);
+        QString Response = SellTXBittrex(amount, price);
         QJsonDocument jsonResponse = QJsonDocument::fromJson(Response.toUtf8());          //get json from str.
         QJsonObject ResponseObject = jsonResponse.object();                              //get json obj
-        if (ResponseObject.value("errors").toBool() == false) {
+        if (ResponseObject.value("status").toString() == "ok") {
             QString update = "Sold "+str.number(amount, 'i', 8)+" Transfercoin for "+str.number(price, 'i', 8)+" on Bittrex";
             ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
             UpdateArbTable("Bittrex", amount, price, true);
@@ -1211,7 +1210,7 @@ void Arbitrage::SafecexBuy_Bittrex(QJsonObject bittrex, QJsonObject safecex)
     int RowCount = 0;
     RowCount = ui->DebugHistory->rowCount();
     ui->DebugHistory->insertRow(RowCount);
-    double bittrexQ = bittrex.value(QString("result")).toObject().value("sell").toArray().first().toObject().value("Quantity").toDouble();
+    double bittrexQ = bittrex.value(QString("result")).toObject().value("buy").toArray().first().toObject().value("Quantity").toDouble();
     double safecexQ = safecex.value("asks").toArray().first().toObject().value("amount").toString().toDouble();
     double price = safecex.value("asks").toArray().first().toObject().value("price").toString().toDouble();
 
@@ -1434,7 +1433,7 @@ void Arbitrage::on_ExtradeBTCGenDepositBTN_clicked()
 }
 void Arbitrage::on_Extrade_Withdraw_MaxTX_Amount_clicked()
 {
-    QString response = GetExtradeBalance("TX");
+    QString response = GetExtradeBalance();
     QString str;
 
     QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toUtf8());          //get json from str.
@@ -1446,7 +1445,7 @@ void Arbitrage::on_Extrade_Withdraw_MaxTX_Amount_clicked()
 }
 void Arbitrage::on_Extrade_Withdraw_MaxBTC_Amount_clicked()
 {
-    QString response = GetExtradeBalance("BTC");
+    QString response = GetExtradeBalance();
     QString str;
 
     QJsonDocument jsonResponse = QJsonDocument::fromJson(response.toUtf8());          //get json from str.
@@ -1530,19 +1529,15 @@ void Arbitrage::on_ExtradeWithdrawBTCBtn_clicked()
             QMessageBox::information(this,"Success","Withdrawal Successful !");
         }
 }
-QString Arbitrage::BuyTXExtrade(QString OrderType, QString OrderSide, double Quantity, double Rate)
+QString Arbitrage::BuyTXExtrade(double Quantity, double Rate)
 {
     QString nonce = GetNonce();
     QJsonObject params;
     QString str = "";
     QString URL = "https://1ex.trade/api/orders/new";
-            URL += "?apikey=";
+            URL += "?api_key=";
             URL += this->ExtradeApiKey;
-            URL += "&type=";
-            URL += OrderType;
-            URL += "&side=";
-            URL += OrderSide;
-            URL += "&nonce=";
+            URL += "&side=buy&type=limit&nonce=";
             URL += nonce;
             URL += "&market=TX&currency=BTC&amount=";
             URL += str.number(Quantity,'i',8);
@@ -1557,16 +1552,14 @@ void Arbitrage::ExtradeBuy_Bittrex(QJsonObject bittrex, QJsonObject extrade)
     int RowCount = 0;
     RowCount = ui->DebugHistory->rowCount();
     ui->DebugHistory->insertRow(RowCount);
-    double bittrexQ = bittrex.value(QString("result")).toObject().value(QString("sell")).toObject().value(0).toObject().value(QString("Quantity")).toDouble();
-    double extradeQ = extrade.value(QString("order-book")).toObject().value(QString("bid")).toObject().value(0).toObject().value(QString("order_amount")).toDouble();
+    double bittrexQ = bittrex.value(QString("result")).toObject().value("buy").toArray().first().toObject().value("Quantity").toDouble();
+    double extradeQ = extrade.value("order-book").toObject().value("ask").toArray().first().toObject().value("order_amount").toDouble();
+    double price = extrade.value("order-book").toObject().value("ask").toArray().first().toObject().value("price").toDouble();
 
     if (bittrexQ > extradeQ) {
-        QString type = "limit";
-        QString side = "buy";
-        double amount = extrade.value(QString("order-book")).toObject().value(QString("ask")).toObject().value(0).toObject().value(QString("order_amount")).toDouble();
-        double price = extrade.value(QString("order-book")).toObject().value(QString("ask")).toObject().value(0).toObject().value(QString("price")).toDouble();
+        double amount = extradeQ;
 
-        QString Response = BuyTXExtrade(type, side, amount, price);
+        QString Response = BuyTXExtrade(amount, price);
         QJsonDocument jsonResponse = QJsonDocument::fromJson(Response.toUtf8());          //get json from str.
         QJsonObject ResponseObject = jsonResponse.object();                              //get json obj
 
@@ -1575,16 +1568,13 @@ void Arbitrage::ExtradeBuy_Bittrex(QJsonObject bittrex, QJsonObject extrade)
             ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
             UpdateArbTable("Extrade", amount, price, false);
         } else {
-                QString update = "ExtradeBuy - Error: "+ResponseObject.value(QString("errors")).toString();
+                QString update = "ExtradeBuy_Bittrex - Error: "+ResponseObject.value(QString("errors")).toString();
                 ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
         }
     } else {
-        QString type = "limit";
-        QString side = "buy";
-        double amount = bittrex.value(QString("result")).toObject().value(QString("sell")).toObject().value(0).toObject().value(QString("Quantity")).toDouble();
-        double price = extrade.value(QString("order-book")).toObject().value(QString("bid")).toObject().value(0).toObject().value(QString("price")).toDouble();
+        double amount = bittrexQ;
 
-        QString Response = BuyTXExtrade(type, side, amount, price);
+        QString Response = BuyTXExtrade(amount, price);
         QJsonDocument jsonResponse = QJsonDocument::fromJson(Response.toUtf8());          //get json from str.
         QJsonObject ResponseObject = jsonResponse.object();                              //get json obj
         if (ResponseObject.value("errors").toBool() == false) {
@@ -1592,12 +1582,12 @@ void Arbitrage::ExtradeBuy_Bittrex(QJsonObject bittrex, QJsonObject extrade)
             ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
             UpdateArbTable("Extrade", amount, price, false);
         } else {
-            QString update = "ExtradeBuy - Error: "+ResponseObject.value("errors").toString();
+            QString update = "ExtradeBuy_Bittrex - Error: "+ResponseObject.value("errors").toString();
             ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
         }
     }
 }
-QString Arbitrage::SellTXExtrade(QString OrderType, QString OrderSide, double Amount, double Price)
+QString Arbitrage::SellTXExtrade(double Amount, double Price)
 {
     QString nonce = GetNonce();
     QJsonObject params;
@@ -1605,11 +1595,7 @@ QString Arbitrage::SellTXExtrade(QString OrderType, QString OrderSide, double Am
     QString URL = "https://1ex.trade/api/orders/new";
             URL += "?api_key=";
             URL += this->ExtradeApiKey;
-            URL += "&type=";
-            URL += OrderType;
-            URL += "&side=";
-            URL += OrderSide;
-            URL += "&nonce=";
+            URL += "&type=limit&side=sell&nonce=";
             URL += nonce;
             URL += "&market=TX&currency=BTC&amount=";
             URL += str.number(Amount,'i',8);
@@ -1618,6 +1604,47 @@ QString Arbitrage::SellTXExtrade(QString OrderType, QString OrderSide, double Am
 
     QString Response = sendExtradeRequest(URL, true);
     return Response;
+}
+void Arbitrage::ExtradeSell_Bittrex(QJsonObject bittrex, QJsonObject extrade)
+{
+    QString str = "";
+    int RowCount = 0;
+    RowCount = ui->DebugHistory->rowCount();
+    ui->DebugHistory->insertRow(RowCount);
+    double bittrexQ = bittrex.value(QString("result")).toObject().value("sell").toArray().first().toObject().value("Quantity").toDouble();
+    double extradeQ = extrade.value("order-book").toObject().value("bid").toArray().first().toObject().value("order_amount").toDouble();
+    double price = extrade.value("order-book").toObject().value("bid").toArray().first().toObject().value("price").toDouble();
+
+    if (extradeQ > bittrexQ) {
+        double amount = bittrexQ;
+
+        QString Response = SellTXExtrade(amount, price);
+        QJsonDocument jsonResponse = QJsonDocument::fromJson(Response.toUtf8());          //get json from str.
+        QJsonObject ResponseObject = jsonResponse.object();                              //get json obj
+
+        if (ResponseObject.value("status").toString() == "ok") {
+            QString update = "Sold "+str.number(amount, 'i', 8)+" Transfercoin for "+str.number(price, 'i', 8)+" on Extrade";
+            ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
+            UpdateArbTable("Extrade", amount, price, true);
+        } else {
+            QString update = "ExtradeSell_Bittrex - Error: "+ResponseObject.value(QString("errors")).toString();
+            ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
+        }
+    } else {
+        double amount = extradeQ;
+
+        QString Response = SellTXExtrade(amount, price);
+        QJsonDocument jsonResponse = QJsonDocument::fromJson(Response.toUtf8());          //get json from str.
+        QJsonObject ResponseObject = jsonResponse.object();                              //get json obj
+        if (ResponseObject.value("status").toString() == "ok") {
+            QString update = "Sold "+str.number(amount, 'i', 8)+" Transfercoin for "+str.number(price, 'i', 8)+" on Extrade";
+            ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
+            UpdateArbTable("Extrade", amount, price, true);
+        } else {
+            QString update = "ExtradeSell_Bittrex - Error: "+ResponseObject.value("errors").toString();
+            ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
+        }
+    }
 }
 QString Arbitrage::ExtradeWithdraw(double Amount, QString Address, QString Coin)
 {
@@ -1643,15 +1670,13 @@ QString Arbitrage::GetExtradeOrderBook()
     QString Response = sendExtradeRequest("https://1ex.trade/api/order-book?market=TX&currency=BTC", false);
     return Response;
 }
-QString Arbitrage::GetExtradeBalance(QString Currency)
+QString Arbitrage::GetExtradeBalance()
 {
     QString nonce = GetNonce();
     QString URL = "https://1ex.trade/api/balances-and-info?api_key=";
             URL += this->ExtradeApiKey;
             URL += "&nonce=";
             URL += nonce;
-            URL += "&currency=";
-            URL += Currency;
 
     QString Response = sendExtradeRequest(URL, true);
      return Response;
@@ -1710,6 +1735,8 @@ QString Arbitrage::sendExtradeRequest(QString url, bool post)
             // hack - nonce needs to be a double or 1ex.trade won't be happy
             if (itm.first == "nonce") {
                 json.insert(itm.first, itm.second.toDouble());
+            } else if (itm.first == "amount" || itm.first == "limit_price") {
+                json.insert(itm.first, itm.second.toFloat());
             } else {
                 json.insert(itm.first, itm.second);
             }
@@ -1874,7 +1901,7 @@ QString Arbitrage::BuyTXYobit(double Quantity, double Rate)
             URL += "&rate=";
             URL += str.number(Rate,'i',8);
 
-    QString Response = sendSafecexRequest(URL);
+    QString Response = sendYobitRequest(URL, true);
     return Response;
 }
 void Arbitrage::YobitBuy_Bittrex(QJsonObject bittrex, QJsonObject yobit)
@@ -1883,7 +1910,7 @@ void Arbitrage::YobitBuy_Bittrex(QJsonObject bittrex, QJsonObject yobit)
     int RowCount = 0;
     RowCount = ui->DebugHistory->rowCount();
     ui->DebugHistory->insertRow(RowCount);
-    double bittrexQ = bittrex.value(QString("result")).toObject().value("sell").toArray().first().toObject().value("Quantity").toDouble();
+    double bittrexQ = bittrex.value(QString("result")).toObject().value("buy").toArray().first().toObject().value("Quantity").toDouble();
     double yobitQ = yobit.value("asks").toArray().first().toArray().last().toDouble();
     double price = yobit.value("asks").toArray().first().toArray().first().toDouble();
 
@@ -1971,7 +1998,7 @@ QString Arbitrage::SellTXYobit(double Amount, double Price)
             URL += "&nonce=";
             URL += nonce;
 
-    QString Response = sendSafecexRequest(URL);
+    QString Response = sendYobitRequest(URL, true);
     return Response;
 }
 void Arbitrage::YobitSell_Bittrex(QJsonObject bittrex, QJsonObject yobit)
@@ -2070,22 +2097,14 @@ QString Arbitrage::YobitWithdraw(double Amount, QString Address, QString Coin)
             URL += "&nonce=";
             URL += nonce;
 
-    QString Response = sendYobitRequest(URL);
+    QString Response = sendYobitRequest(URL, true);
      return Response;
 }
 QString Arbitrage::GetYobitOrderBook()
 {
 
-    QString  Response = sendYobitRequest("https://yobit.net/api/3/depth/tx_btc", false);
+    QString  Response = sendYobitRequest("https://yobit.net/api/2/tx_btc/depth", false);
     return Response;
-}
-QString Arbitrage::GetNonce()
-{
-    int64_t nonce = (GetTimeMillis() / 1000);
-    std::stringstream mySS;
-    mySS<<nonce;
-    string str = mySS.str();
-    return QString::fromStdString(str);
 }
 QString Arbitrage::GetYobitBalance()
 {
@@ -2094,7 +2113,7 @@ QString Arbitrage::GetYobitBalance()
             URL += "&nonce=";
             URL += nonce;
 
-    QString Response = sendYobitRequest(URL);
+    QString Response = sendYobitRequest(URL, true);
      return Response;
 }
 QString Arbitrage::GetYobitTXAddress()
@@ -2105,7 +2124,7 @@ QString Arbitrage::GetYobitTXAddress()
             URL += "&nonce=";
             URL += nonce;
 
-    QString Response = sendYobitRequest(URL);
+    QString Response = sendYobitRequest(URL, true);
     return Response;
 }
 QString Arbitrage::GetYobitBTCAddress()
@@ -2116,7 +2135,7 @@ QString Arbitrage::GetYobitBTCAddress()
             URL += "&nonce=";
             URL += nonce;
 
-    QString Response = sendYobitRequest(URL);
+    QString Response = sendYobitRequest(URL, true);
     return Response;
 }
 QString Arbitrage::sendYobitRequest(QString url, bool post)
@@ -2141,7 +2160,6 @@ QString Arbitrage::sendYobitRequest(QString url, bool post)
         req.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
         QUrlQuery params = QUrlQuery(QUrl(url));
         QString b = params.toString();
-        QMessageBox::information(this,"Test",b);
         req.setRawHeader("Key",this->YobitApiKey.toStdString().c_str()); //set header for yobit
         req.setRawHeader("Sign",HMAC_SHA512_SIGNER_YOBIT(b,Secret).toStdString().c_str()); //set header for yobit
         reply = mgr.post(req, params.query(QUrl::FullyEncoded).toUtf8());
@@ -2275,9 +2293,17 @@ QString Arbitrage::HMAC_SHA256_SIGNER(QString UrlToSign, QString Secret)
         sprintf(&mdString[i*2], "%02x", (unsigned int)digest[i]);
     }
     retval = mdString;
-    QMessageBox::information(this,"HMAC Digest","HMAC_SHA256_SIGNER: " + retval);
+    //QMessageBox::information(this,"HMAC Digest","HMAC_SHA256_SIGNER: " + retval);
 
     return retval;
+}
+QString Arbitrage::GetNonce()
+{
+    int64_t nonce = (GetTimeMillis() / 1000);
+    std::stringstream mySS;
+    mySS<<nonce;
+    string str = mySS.str();
+    return QString::fromStdString(str);
 }
 QJsonObject Arbitrage::GetResultObjectFromJSONObject(QString response)
 {
@@ -2361,29 +2387,30 @@ void Arbitrage::StartArbitrage()
 
         YobitObject = ResponseObject;
     }
+    this->end = false;
     if (this->EnableBittrex == true && this->EnableExtrade == true) {
 
         BuyExtradeSellBittrex(ExtradeObject, BittrexObject);
         BuyBittrexSellExtrade(ExtradeObject, BittrexObject);
     }
-    if (this->EnableBittrex == true && this->EnableSafecex == true) {
+    if ((this->EnableBittrex == true && this->EnableSafecex == true) && this->end == false) {
 
         BuySafecexSellBittrex(SafecexObject, BittrexObject);
         BuyBittrexSellSafecex(SafecexObject, BittrexObject);
     }
-    if (this->EnableBittrex == true && this->EnableYobit == true) {
+    if ((this->EnableBittrex == true && this->EnableYobit == true) && this->end == false) {
         BuyYobitSellBittrex(YobitObject, BittrexObject);
         BuyBittrexSellYobit(YobitObject, BittrexObject);
     }
-    if (this->EnableSafecex == true && this->EnableExtrade == true) {
-        //BuyExtradeSellSafeCex(SafecexObject, ExtradeObject);
-        //BuySafeCexSellExtrade(SafecexObject, ExtradeObject);
+    if ((this->EnableSafecex == true && this->EnableExtrade == true) && this->end == false) {
+        BuyExtradeSellSafecex(SafecexObject, ExtradeObject);
+        BuySafecexSellExtrade(SafecexObject, ExtradeObject);
     }
-    if (this->EnableSafecex == true && this->EnableYobit == true) {
+    if ((this->EnableSafecex == true && this->EnableYobit == true) && this->end == false) {
         BuyYobitSellSafecex(SafecexObject, YobitObject);
         BuySafecexSellYobit(SafecexObject, YobitObject);
     }
-    if (this->EnableExtrade == true && this->EnableYobit == true) {
+    if ((this->EnableExtrade == true && this->EnableYobit == true) && this->end == false) {
         //BuyExtradeSellYobit(ExtradeObject, YobitObject);
         //BuyYobitSellExtrade(ExtradeObject, YobitObject);
     }
@@ -2406,7 +2433,7 @@ void Arbitrage::UpdateArbTable(QString exchange, double amount, double price, bo
         double buyPrice = ui->ArbHistoryTable->item((RowCount-1), 5)->text().toDouble();
         double Profit = sellPrice - buyPrice;
         this->TotalEarned += Profit;
-        ui->ArbHistoryTable->setItem(RowCount, 6, new QTableWidgetItem(Profit));
+        ui->ArbHistoryTable->setItem(RowCount, 6, new QTableWidgetItem(str.number(Profit,'i',8)));
     }
 }
 void Arbitrage::on_StartArbButton_clicked()
@@ -2438,12 +2465,12 @@ void Arbitrage::BuyExtradeSellBittrex(QJsonObject extrade, QJsonObject bittrex) 
     QString str = "";
 
     double BittrexPrice = bittrex.value(QString("result")).toObject().value("buy").toArray().first().toObject().value("Rate").toDouble();
-    double ExtradePrice = extrade.value(QString("order-book")).toObject().value("ask").toArray().first().toObject().value("price").toString().toDouble();
+    double ExtradePrice = extrade.value("order-book").toObject().value("ask").toArray().first().toObject().value("price").toDouble();
 
     if (ExtradePrice < BittrexPrice){
         if ((((BittrexPrice / ExtradePrice) * 100) - 100) > percentGain) {
-            //ExtradeBuy(bittrex, extrade);
-            //BittrexSell(bittrex, extrade);
+            ExtradeBuy_Bittrex(bittrex, extrade);
+            BittrexSell_Extrade(bittrex, extrade);
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);
             QString update = "Arb opportunity. ";
@@ -2454,7 +2481,7 @@ void Arbitrage::BuyExtradeSellBittrex(QJsonObject extrade, QJsonObject bittrex) 
                     update += str.number(BittrexPrice,'i',8);
                     update += ") Placing orders.";
             ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
-            return;
+            this->end = true;
         } else {
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);
@@ -2468,7 +2495,6 @@ void Arbitrage::BuyExtradeSellBittrex(QJsonObject extrade, QJsonObject bittrex) 
                     update += str.number(percentGain,'i',4);
                     update += "% Gain";
             ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
-            return;
         }
     } else {
         RowCount = ui->DebugHistory->rowCount();
@@ -2479,7 +2505,6 @@ void Arbitrage::BuyExtradeSellBittrex(QJsonObject extrade, QJsonObject bittrex) 
                 update += str.number(BittrexPrice,'i',8);
                 update += ")";
         ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
-        return;
     }
 }
 void Arbitrage::BuyBittrexSellExtrade(QJsonObject extrade, QJsonObject bittrex) {
@@ -2487,12 +2512,12 @@ void Arbitrage::BuyBittrexSellExtrade(QJsonObject extrade, QJsonObject bittrex) 
     int percentGain = ui->PercentGain->text().toDouble();
     QString str = "";
     double BittrexPrice = bittrex.value(QString("result")).toObject().value("sell").toArray().first().toObject().value("Rate").toDouble();
-    double ExtradePrice = extrade.value(QString("order-book")).toObject().value("bid").toArray().first().toObject().value("price").toString().toDouble();
+    double ExtradePrice = extrade.value("order-book").toObject().value("bid").toArray().first().toObject().value("price").toDouble();
 
     if (BittrexPrice < ExtradePrice){
         if ( (((ExtradePrice / BittrexPrice) * 100) - 100) > percentGain) {
-            //BittrexBuy(bittrex, extrade);
-            //ExtradeSell(bittrex, extrade);
+            BittrexBuy_Extrade(bittrex, extrade);
+            ExtradeSell_Bittrex(bittrex, extrade);
             QString update = "Arb opportunity. ";
                     update += str.number((((ExtradePrice / BittrexPrice) * 100) - 100),'i',8);
                     update += "% gain for buying on Bittrex(";
@@ -2501,6 +2526,7 @@ void Arbitrage::BuyBittrexSellExtrade(QJsonObject extrade, QJsonObject bittrex) 
                     update += str.number(ExtradePrice,'i',8);
                     update += ") Placing orders.";
             ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
+            this->end = true;
         } else {
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);
@@ -2564,6 +2590,7 @@ void Arbitrage::BuySafecexSellBittrex(QJsonObject safecex, QJsonObject bittrex) 
                     update += str.number(BittrexPrice,'i',8);
                     update += ") Placing orders.";
             ui->DebugHistory->setItem((RowCount), 0, new QTableWidgetItem(update.toUtf8().constData()));
+            this->end = true;
         } else {
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);
@@ -2610,6 +2637,7 @@ void Arbitrage::BuyBittrexSellSafecex(QJsonObject safecex, QJsonObject bittrex) 
                     update += str.number(SafecexPrice,'i',8);
                     update += ") Placing orders.";
             ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
+            this->end = true;
         } else {
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);
@@ -2644,8 +2672,8 @@ void Arbitrage::BuyYobitSellBittrex(QJsonObject yobit, QJsonObject bittrex) {
 
     if (YobitPrice < BittrexPrice){
         if ((((BittrexPrice / YobitPrice) * 100) - 100) > percentGain) {
-            YobitBuy_Bittrex(bittrex, yobit);
-            BittrexSell_Yobit(bittrex, yobit);
+            //YobitBuy_Bittrex(bittrex, yobit);
+            //BittrexSell_Yobit(bittrex, yobit);
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);
             QString update = "Arb opportunity. ";
@@ -2656,6 +2684,7 @@ void Arbitrage::BuyYobitSellBittrex(QJsonObject yobit, QJsonObject bittrex) {
                     update += str.number(BittrexPrice,'i',8);
                     update += ") Placing orders.";
             ui->DebugHistory->setItem((RowCount), 0, new QTableWidgetItem(update.toUtf8().constData()));
+            this->end = true;
         } else {
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);
@@ -2690,8 +2719,8 @@ void Arbitrage::BuyBittrexSellYobit(QJsonObject yobit, QJsonObject bittrex) {
 
     if (BittrexPrice < YobitPrice){
         if ( (((YobitPrice / BittrexPrice) * 100) - 100) > percentGain) {
-            BittrexBuy_Yobit(bittrex, yobit);
-            YobitSell_Bittrex(bittrex, yobit);
+            //BittrexBuy_Yobit(bittrex, yobit);
+            //YobitSell_Bittrex(bittrex, yobit);
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);
             QString update = "Arb opportunity. ";
@@ -2702,6 +2731,7 @@ void Arbitrage::BuyBittrexSellYobit(QJsonObject yobit, QJsonObject bittrex) {
                     update += str.number(YobitPrice,'i',8);
                     update += ") Placing orders.";
             ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
+            this->end = true;
         } else {
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);
@@ -2753,6 +2783,7 @@ void Arbitrage::BuyYobitSellSafecex(QJsonObject yobit, QJsonObject safecex) {
                     update += str.number(SafecexPrice,'i',8);
                     update += ") Placing orders.";
             ui->DebugHistory->setItem((RowCount), 0, new QTableWidgetItem(update.toUtf8().constData()));
+            this->end = true;
         } else {
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);
@@ -2799,6 +2830,7 @@ void Arbitrage::BuySafecexSellYobit(QJsonObject yobit, QJsonObject safecex) {
                     update += str.number(YobitPrice,'i',8);
                     update += ") Placing orders.";
             ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
+            this->end = true;
         } else {
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);
@@ -2823,38 +2855,39 @@ void Arbitrage::BuySafecexSellYobit(QJsonObject yobit, QJsonObject safecex) {
         ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
     }
 }
-/* UNFINISHED
-void Arbitrage::BuySafecexSellExtrade(QJsonObject extrade, QJsonObject safecex) {
+
+void Arbitrage::BuySafecexSellExtrade(QJsonObject safecex, QJsonObject extrade) {
     int RowCount = 0;
     double percentGain = ui->PercentGain->text().toDouble();
     QString str = "";
 
-    double BittrexPrice = bittrex.value(QString("result")).toObject().value("buy").toArray().first().toObject().value("Rate").toDouble();
+    double ExtradePrice = extrade.value("order-book").toObject().value("bid").toArray().first().toObject().value("price").toDouble();
     double SafecexPrice = safecex.value("asks").toArray().first().toObject().value("price").toString().toDouble();
 
-    if (SafecexPrice < BittrexPrice){
-        if ((((BittrexPrice / SafecexPrice) * 100) - 100) > percentGain) {
-            SafecexBuy_Bittrex(bittrex, safecex);
-            BittrexSell_Safecex(bittrex, safecex);
+    if (SafecexPrice < ExtradePrice){
+        if ((((ExtradePrice / SafecexPrice) * 100) - 100) > percentGain) {
+            //SafecexBuy_Extrade(extrade, safecex);
+            //ExtradeSell_Safecex(extrade, safecex);
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);
             QString update = "Arb opportunity. ";
-                    update += str.number((((BittrexPrice / SafecexPrice) * 100) - 100),'i',8);
+                    update += str.number((((ExtradePrice / SafecexPrice) * 100) - 100),'i',8);
                     update += "% gain for buying on Safecex(";
                     update += str.number(SafecexPrice,'i',8);
-                    update += ") and selling on Bittrex(";
-                    update += str.number(BittrexPrice,'i',8);
+                    update += ") and selling on Extrade(";
+                    update += str.number(ExtradePrice,'i',8);
                     update += ") Placing orders.";
             ui->DebugHistory->setItem((RowCount), 0, new QTableWidgetItem(update.toUtf8().constData()));
+            this->end = true;
         } else {
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);
             QString update = "Arb opportunity. ";
-                    update += str.number((((BittrexPrice / SafecexPrice) * 100) - 100),'i',8);
+                    update += str.number((((ExtradePrice / SafecexPrice) * 100) - 100),'i',8);
                     update += "% gain for buying on Safecex(";
                     update += str.number(SafecexPrice,'i',8);
-                    update += ") and selling on Bittrex(";
-                    update += str.number(BittrexPrice,'i',8);
+                    update += ") and selling on Extrade(";
+                    update += str.number(ExtradePrice,'i',8);
                     update += ") Waiting until higher than ";
                     update += str.number(percentGain,'i',4);
                     update += "% Gain";
@@ -2865,40 +2898,41 @@ void Arbitrage::BuySafecexSellExtrade(QJsonObject extrade, QJsonObject safecex) 
         ui->DebugHistory->insertRow(RowCount);
         QString update = "No arb opportunities for buying on Safecex(";
                 update += str.number(SafecexPrice,'i',8);
-                update += ") and selling on Bittrex(";
-                update += str.number(BittrexPrice,'i',8);
+                update += ") and selling on Extrade(";
+                update += str.number(ExtradePrice,'i',8);
                 update += ")";
         ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
     }
 }
-void Arbitrage::BuyExtradeSellSafecex(QJsonObject extrade, QJsonObject safecex) {
+void Arbitrage::BuyExtradeSellSafecex(QJsonObject safecex, QJsonObject extrade) {
     int RowCount = 0;
     int percentGain = ui->PercentGain->text().toDouble();
     QString str = "";
-    double BittrexPrice = bittrex.value(QString("result")).toObject().value("sell").toArray().first().toObject().value("Rate").toDouble();
+    double ExtradePrice = extrade.value("order-book").toObject().value("ask").toArray().first().toObject().value("price").toDouble();
     double SafecexPrice = safecex.value("bids").toArray().first().toObject().value("price").toString().toDouble();
 
-    if (BittrexPrice < SafecexPrice){
-        if ( (((SafecexPrice / BittrexPrice) * 100) - 100) > percentGain) {
-            BittrexBuy_Safecex(bittrex, safecex);
-            SafecexSell_Bittrex(bittrex, safecex);
+    if (ExtradePrice < SafecexPrice){
+        if ( (((SafecexPrice / ExtradePrice) * 100) - 100) > percentGain) {
+            //ExtradeBuy_Safecex(extrade, safecex);
+            //SafecexSell_Extrade(extrade, safecex);
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);
             QString update = "Arb opportunity. ";
-                    update += str.number((((SafecexPrice / BittrexPrice) * 100) - 100),'i',8);
-                    update += "% gain for buying on Bittrex(";
-                    update += str.number(BittrexPrice,'i',8);
+                    update += str.number((((SafecexPrice / ExtradePrice) * 100) - 100),'i',8);
+                    update += "% gain for buying on Extrade(";
+                    update += str.number(ExtradePrice,'i',8);
                     update += ") and selling on Safecex(";
                     update += str.number(SafecexPrice,'i',8);
                     update += ") Placing orders.";
             ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
+            this->end = true;
         } else {
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);
             QString update = "Arb opportunity. ";
-                    update += str.number((((SafecexPrice / BittrexPrice) * 100) - 100),'i',8);
-                    update += "% gain for buying on Bittrex(";
-                    update += str.number(BittrexPrice, 'i', 8);
+                    update += str.number((((SafecexPrice / ExtradePrice) * 100) - 100),'i',8);
+                    update += "% gain for buying on Extrade(";
+                    update += str.number(ExtradePrice, 'i', 8);
                     update += ") and selling on Safecex(";
                     update += str.number(SafecexPrice, 'i', 8);
                     update +=") Waiting until higher than ";
@@ -2909,8 +2943,8 @@ void Arbitrage::BuyExtradeSellSafecex(QJsonObject extrade, QJsonObject safecex) 
     } else {
         RowCount = ui->DebugHistory->rowCount();
         ui->DebugHistory->insertRow(RowCount);
-        QString update = "No arb opportunities for buying on Bittrex(";
-                update += str.number(BittrexPrice, 'i', 8);
+        QString update = "No arb opportunities for buying on Extrade(";
+                update += str.number(ExtradePrice, 'i', 8);
                 update += ") and selling on Safecex(";
                 update += str.number(SafecexPrice, 'i', 8)+')';
         ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
@@ -2918,6 +2952,7 @@ void Arbitrage::BuyExtradeSellSafecex(QJsonObject extrade, QJsonObject safecex) 
 }
 // Safecex
 
+/* UNFINISHED
 // Extrade
 void Arbitrage::BuyYobitSellExtrade(QJsonObject yobit, QJsonObject extrade) {
     int RowCount = 0;
@@ -2941,6 +2976,7 @@ void Arbitrage::BuyYobitSellExtrade(QJsonObject yobit, QJsonObject extrade) {
                     update += str.number(BittrexPrice,'i',8);
                     update += ") Placing orders.";
             ui->DebugHistory->setItem((RowCount), 0, new QTableWidgetItem(update.toUtf8().constData()));
+            this->end = true;
         } else {
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);
@@ -2987,6 +3023,7 @@ void Arbitrage::BuyExtradeSellYobit(QJsonObject yobit, QJsonObject extrade) {
                     update += str.number(YobitPrice,'i',8);
                     update += ") Placing orders.";
             ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
+            this->end = true;
         } else {
             RowCount = ui->DebugHistory->rowCount();
             ui->DebugHistory->insertRow(RowCount);

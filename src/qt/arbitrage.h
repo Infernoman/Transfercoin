@@ -41,10 +41,10 @@ private slots:
     void DisplaySafecexBalance(QLabel &BalanceLabel, QLabel &Available, QLabel &Pending, QString Currency, QString Response);
     void DisplayYobitBalance(QLabel &BalanceLabel, QString Currency, QString Response);
     void ActionsOnSwitch(int index);
-    void BittrexToggled(bool checked);
-    void SafecexToggled(bool checked);
-    void ExtradeToggled(bool checked);
-    void YobitToggled(bool checked);
+    void BittrexToggled(int state);
+    void SafecexToggled(int state);
+    void ExtradeToggled(int state);
+    void YobitToggled(int state);
 
     // Save/Load Keys
     void on_UpdateKeys_clicked(bool Save=false, bool Load=false);
@@ -66,8 +66,8 @@ private slots:
     void BuyYobitSellBittrex(QJsonObject yobit, QJsonObject bittrex);
     void BuyBittrexSellYobit(QJsonObject yobit, QJsonObject bittrex);
     // Safecex
-    //void BuySafecexSellExtrade(QJsonObject extrade, QJsonObject safecex);
-    //void BuyExtradeSellSafecex(QJsonObject extrade, QJsonObject safecex);
+    void BuySafecexSellExtrade(QJsonObject extrade, QJsonObject safecex);
+    void BuyExtradeSellSafecex(QJsonObject extrade, QJsonObject safecex);
     void BuyYobitSellSafecex(QJsonObject yobit, QJsonObject safecex);
     void BuySafecexSellYobit(QJsonObject yobit, QJsonObject safecex);
     // Extrade
@@ -83,7 +83,7 @@ private slots:
     void on_BittrexWithdrawTXBtn_clicked();
     void on_BittrexWithdrawBTCBtn_clicked();
     void BittrexBuy_Extrade(QJsonObject bittrex, QJsonObject extrade);
-    //void BittrexSell_Extrade(QJsonObject bittrex, QJsonObject extrade);
+    void BittrexSell_Extrade(QJsonObject bittrex, QJsonObject extrade);
     void BittrexBuy_Safecex(QJsonObject bittrex, QJsonObject safecex);
     void BittrexSell_Safecex(QJsonObject bittrex, QJsonObject safecex);
     void BittrexBuy_Yobit(QJsonObject bittrex, QJsonObject yobit);
@@ -128,14 +128,14 @@ private slots:
     void on_Extrade_Withdraw_MaxBTC_Amount_clicked();
     void on_ExtradeWithdrawTXBtn_clicked();
     void on_ExtradeWithdrawBTCBtn_clicked();
-    QString BuyTXExtrade(QString OrderType, QString OrderSide, double Quantity, double Rate);
+    QString BuyTXExtrade(double Quantity, double Rate);
     void ExtradeBuy_Bittrex(QJsonObject bittrex, QJsonObject extrade);
-    //QJsonObject ExtradeSell_Bittrex(QJsonObject bittrex, QJsonObject extrade);
-    //QJsonObject ExtradeBuy_Safecex(QJsonObject extrade, QJsonObject safecex);
-    //QJsonObject ExtradeSell_Safecex(QJsonObject extrade, QJsonObject safecex);
-    //QJsonObject ExtradeBuy_Yobit(QJsonObject extrade, QJsonObject yobit);
-    //QJsonObject ExtradeSell_Yobit(QJsonObject extrade, QJsonObject yobit);
-    QString SellTXExtrade(QString OrderType, QString OrderSide, double Quantity, double Rate);
+    void ExtradeSell_Bittrex(QJsonObject bittrex, QJsonObject extrade);
+    //void ExtradeBuy_Safecex(QJsonObject extrade, QJsonObject safecex);
+    //void ExtradeSell_Safecex(QJsonObject extrade, QJsonObject safecex);
+    //void ExtradeBuy_Yobit(QJsonObject extrade, QJsonObject yobit);
+    //void ExtradeSell_Yobit(QJsonObject extrade, QJsonObject yobit);
+    QString SellTXExtrade(double Quantity, double Rate);
     QString ExtradeWithdraw(double Amount, QString Address, QString Coin);
     QString GetExtradeOrderBook();
     QString GetExtradeBalance(QString Currency);
@@ -190,6 +190,7 @@ private:
     bool EnableSafecex;
     bool EnableExtrade;
     bool EnableYobit;
+    bool end;
     QTimer *timer;
     QTimer *arbtimer;
     QString BittrexApiKey;

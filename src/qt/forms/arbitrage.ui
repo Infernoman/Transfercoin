@@ -32,7 +32,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>5</number>
+      <number>6</number>
      </property>
      <widget class="QWidget" name="ArbHistory">
       <attribute name="title">
@@ -1034,20 +1034,6 @@
        <item row="0" column="0">
         <layout class="QGridLayout" name="gridLayout_6">
          <item row="0" column="0">
-          <widget class="QLabel" name="label_37">
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>TX Balance:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
           <widget class="QLabel" name="label_38">
            <property name="font">
             <font>
@@ -1061,50 +1047,7 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_39">
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>TX Pending:</string>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="1">
-          <widget class="QLabel" name="ExtradeTXBalance">
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>0.00000000</string>
-           </property>
-           <property name="textInteractionFlags">
-            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLabel" name="label_40">
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>BTC Balance:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
           <widget class="QLabel" name="ExtradeTXAvailable">
            <property name="font">
             <font>
@@ -1119,22 +1062,7 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
-          <widget class="QLabel" name="ExtradeTXPending">
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>0.00000000</string>
-           </property>
-           <property name="textInteractionFlags">
-            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
+         <item row="0" column="2">
           <widget class="QLabel" name="label_41">
            <property name="font">
             <font>
@@ -1148,36 +1076,7 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="2">
-          <widget class="QLabel" name="label_42">
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>BTC Pending:</string>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="3">
-          <widget class="QLabel" name="ExtradeBTCBalance">
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>0.00000000</string>
-           </property>
-           <property name="textInteractionFlags">
-            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="3">
           <widget class="QLabel" name="ExtradeBTCAvailable">
            <property name="font">
             <font>
@@ -1192,22 +1091,7 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="3">
-          <widget class="QLabel" name="ExtradeBTCPending">
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>0.00000000</string>
-           </property>
-           <property name="textInteractionFlags">
-            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
+         <item row="1" column="0">
           <widget class="QPushButton" name="ExtradeTXGenDepositBTN">
            <property name="font">
             <font>
@@ -1219,7 +1103,7 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="2">
+         <item row="1" column="2">
           <widget class="QPushButton" name="ExtradeBTCGenDepositBTN">
            <property name="font">
             <font>
@@ -1534,7 +1418,7 @@
             </font>
            </property>
            <property name="text">
-            <string>TX Balance:</string>
+            <string>TX Available:</string>
            </property>
           </widget>
          </item>
@@ -1563,7 +1447,7 @@
             </font>
            </property>
            <property name="text">
-            <string>BTC Balance:</string>
+            <string>BTC Available:</string>
            </property>
           </widget>
          </item>
