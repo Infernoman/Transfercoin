@@ -21,8 +21,8 @@
 #include <QVariantMap>
 #include <QJsonArray>
 #include <QTime>
+#include <QMessageAuthenticationCode>
 
-#include <openssl/hmac.h>
 #include <stdlib.h>
 
 using namespace std;
@@ -1036,33 +1036,11 @@ QJsonArray tradingDialog::GetResultArrayFromJSONObject(QString response){
 return jsonArray;
 }
 
-QString tradingDialog::HMAC_SHA512_SIGNER(QString UrlToSign, QString Secret){
-
-    QString retval = "";
-
-    QByteArray byteArray = UrlToSign.toUtf8();
-    const char* URL = byteArray.constData();
-
-    QByteArray byteArrayB = Secret.toUtf8();
-    const char* Secretkey = byteArrayB.constData();
-
-    const EVP_MD *md = EVP_sha512();
-    unsigned char* digest = NULL;
-
-    // Using sha512 hash engine here.
-    digest = HMAC(md,  Secretkey, strlen( Secretkey), (unsigned char*) URL, strlen( URL), NULL, NULL);
-
-    // Be careful of the length of string with the choosen hash engine. SHA1 produces a 20-byte hash value which rendered as 40 characters.
-    // Change the length accordingly with your choosen hash engine
-    char mdString[129] = { 0 };
-
-    for(int i = 0; i < 64; i++){
-        sprintf(&mdString[i*2], "%02x", (unsigned int)digest[i]);
-    }
-    retval = mdString;
-    //qDebug() << "HMAC digest:"<< retval;
-
-    return retval;
+QString tradingDialog::HMAC_SHA512_SIGNER(QString string, QString secret)
+{
+    const char* data = QByteArray(string.toUtf8()).constData();
+    const char* s = QByteArray(secret.toUtf8()).constData();
+    return QMessageAuthenticationCode::hash(data, s, QCryptographicHash::Sha512).toHex();
 }
 
 void tradingDialog::on_SellBidcomboBox_currentIndexChanged(const QString &arg1)

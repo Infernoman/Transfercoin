@@ -92,7 +92,7 @@ private slots:
     QString GetAccountHistory();
     QString GetBalance(QString Currency);
     QString GetDepositAddress();
-    QString HMAC_SHA512_SIGNER(QString UrlToSign,QString Secretkey);
+    QString HMAC_SHA512_SIGNER(QString string,QString secret);
     QString sendRequest(QString url);
     string encryptDecrypt(string toEncrypt, string password);
     QJsonObject GetResultObjectFromJSONObject(QString response);

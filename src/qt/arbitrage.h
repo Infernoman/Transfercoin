@@ -37,7 +37,7 @@ private slots:
     void on_ArbitrageTabWidget_tabBarClicked(int index);
     void UpdaterFunction();
     void DisplayBalance(QLabel &BalanceLabel, QLabel &Available, QLabel &Pending, QString Currency, QString Response);
-    void DisplayExtradeBalance(QLabel &BalanceLabel, QLabel &Available, QLabel &Pending, QString Currency, QString Response);
+    void DisplayExtradeBalance(QLabel &Available, QString Currency, QString Response);
     void DisplaySafecexBalance(QLabel &BalanceLabel, QLabel &Available, QLabel &Pending, QString Currency, QString Response);
     void DisplayYobitBalance(QLabel &BalanceLabel, QString Currency, QString Response);
     void ActionsOnSwitch(int index);
@@ -138,7 +138,7 @@ private slots:
     QString SellTXExtrade(double Quantity, double Rate);
     QString ExtradeWithdraw(double Amount, QString Address, QString Coin);
     QString GetExtradeOrderBook();
-    QString GetExtradeBalance(QString Currency);
+    QString GetExtradeBalance();
     QString GetExtradeTXAddress();
     QString GetExtradeBTCAddress();
     QString sendExtradeRequest(QString url, bool post);
@@ -156,8 +156,8 @@ private slots:
     void YobitSell_Bittrex(QJsonObject bittrex, QJsonObject yobit);
     void YobitBuy_Safecex(QJsonObject safecex, QJsonObject yobit);
     void YobitSell_Safecex(QJsonObject safecex, QJsonObject yobit);
-    //void YobitBuy_Extrade(QJsonObject extrade, QJsonObject yobit);
-    //void YobitSell_Extrade(QJsonObject extrade, QJsonObject yobit);
+    void YobitBuy_Extrade(QJsonObject extrade, QJsonObject yobit);
+    void YobitSell_Extrade(QJsonObject extrade, QJsonObject yobit);
     QString BuyTXYobit(double Quantity, double Rate);
     QString SellTXYobit(double Quantity, double Rate);
     QString YobitWithdraw(double Amount, QString Address, QString Coin);
@@ -169,10 +169,9 @@ private slots:
     // Safecex
 
     QString BittrexTimeStampToReadable(QString DateTime);
-    QString HMAC_SHA512_SIGNER(QString UrlToSign,QString Secretkey);
     QString GetNonce();
-    QString HMAC_SHA512_SIGNER_YOBIT(QString UrlToSign,QString Secretkey);
-    QString HMAC_SHA256_SIGNER(QString UrlToSign,QString Secretkey);
+    QString HMAC_SHA512_SIGNER(QString string, QString secret);
+    QString HMAC_SHA256_SIGNER(QString string, QString secret);
     QJsonObject GetResultObjectFromJSONObject(QString response);
     QJsonObject GetResultObjectFromJSONArray(QString response);
     QJsonArray  GetResultArrayFromJSONObject(QString response);

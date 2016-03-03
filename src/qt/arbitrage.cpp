@@ -22,8 +22,8 @@
 #include <QVariantMap>
 #include <QJsonArray>
 #include <QTime>
+#include <QMessageAuthenticationCode>
 
-#include <openssl/hmac.h>
 #include <stdlib.h>
 
 using namespace std;
@@ -1986,6 +1986,47 @@ void Arbitrage::YobitBuy_Safecex(QJsonObject safecex, QJsonObject yobit)
         }
     }
 }
+void Arbitrage::YobitBuy_Extrade(QJsonObject extrade, QJsonObject yobit)
+{
+    QString str = "";
+    int RowCount = 0;
+    RowCount = ui->DebugHistory->rowCount();
+    ui->DebugHistory->insertRow(RowCount);
+    double extradeQ = extrade.value("order-book").toObject().value("bid").toArray().first().toObject().value("order_amount").toDouble();
+    double yobitQ = yobit.value("asks").toArray().first().toArray().last().toDouble();
+    double price = yobit.value("asks").toArray().first().toArray().first().toDouble();
+
+    if (extradeQ > yobitQ) {
+        double amount = yobitQ;
+
+        QString Response = BuyTXYobit(amount, price);
+        QJsonDocument jsonResponse = QJsonDocument::fromJson(Response.toUtf8());          //get json from str.
+        QJsonObject ResponseObject = jsonResponse.object();                              //get json obj
+
+        if (ResponseObject.value("success").toBool() == true) {
+            QString update = "Purchased "+str.number(amount, 'i', 8)+" Transfercoin for "+str.number(price, 'i', 8)+" from Yobit";
+            ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
+            UpdateArbTable("Yobit", amount, price, false);
+        } else {
+            QString update = "YobitBuy_Extrade - Error: "+ResponseObject.value(QString("errors")).toString();
+            ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
+        }
+    } else {
+        double amount = extradeQ;
+
+        QString Response = BuyTXYobit(amount, price);
+        QJsonDocument jsonResponse = QJsonDocument::fromJson(Response.toUtf8());          //get json from str.
+        QJsonObject ResponseObject = jsonResponse.object();                              //get json obj
+        if (ResponseObject.value("success").toBool() == true) {
+            QString update = "Purchased "+str.number(amount, 'i', 8)+" Transfercoin for "+str.number(price, 'i', 8)+" from Yobit";
+            ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
+            UpdateArbTable("Yobit", amount, price, false);
+        } else {
+            QString update = "YobitBuy_Extrade - Error: "+ResponseObject.value("errors").toString();
+            ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
+        }
+    }
+}
 QString Arbitrage::SellTXYobit(double Amount, double Price)
 {
     QString nonce = GetNonce();
@@ -2068,7 +2109,7 @@ void Arbitrage::YobitSell_Safecex(QJsonObject safecex, QJsonObject yobit)
             ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
         }
     } else {
-        double amount = safecexQ;
+        double amount = yobitQ;
 
         QString Response = SellTXYobit(amount, price);
         QJsonDocument jsonResponse = QJsonDocument::fromJson(Response.toUtf8());          //get json from str.
@@ -2079,6 +2120,47 @@ void Arbitrage::YobitSell_Safecex(QJsonObject safecex, QJsonObject yobit)
             UpdateArbTable("Yobit", amount, price, true);
         } else {
             QString update = "YobitSell_Safecex - Error: "+ResponseObject.value("errors").toString();
+            ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
+        }
+    }
+}
+void Arbitrage::YobitSell_Extrade(QJsonObject extrade, QJsonObject yobit)
+{
+    QString str = "";
+    int RowCount = 0;
+    RowCount = ui->DebugHistory->rowCount();
+    ui->DebugHistory->insertRow(RowCount);
+    double extradeQ = extrade.value("order-book").toObject().value("ask").toArray().first().toObject().value("order_amount").toDouble();
+    double yobitQ = yobit.value("bids").toArray().first().toArray().last().toDouble();
+    double price = yobit.value("bids").toArray().first().toArray().first().toDouble();
+
+    if (yobitQ > extradeQ) {
+        double amount = extradeQ;
+
+        QString Response = SellTXYobit(amount, price);
+        QJsonDocument jsonResponse = QJsonDocument::fromJson(Response.toUtf8());          //get json from str.
+        QJsonObject ResponseObject = jsonResponse.object();                              //get json obj
+
+        if (ResponseObject.value("success").toBool() == true) {
+            QString update = "Sold "+str.number(amount, 'i', 8)+" Transfercoin for "+str.number(price, 'i', 8)+" on Yobit";
+            ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
+            UpdateArbTable("Yobit", amount, price, true);
+        } else {
+            QString update = "YobitSell_Extrade - Error: "+ResponseObject.value(QString("errors")).toString();
+            ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
+        }
+    } else {
+        double amount = yobitQ;
+
+        QString Response = SellTXYobit(amount, price);
+        QJsonDocument jsonResponse = QJsonDocument::fromJson(Response.toUtf8());          //get json from str.
+        QJsonObject ResponseObject = jsonResponse.object();                              //get json obj
+        if (ResponseObject.value("success").toBool() == true) {
+            QString update = "Sold "+str.number(amount, 'i', 8)+" Transfercoin for "+str.number(price, 'i', 8)+" on Yobit";
+            ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
+            UpdateArbTable("Yobit", amount, price, true);
+        } else {
+            QString update = "YobitSell_Extrade - Error: "+ResponseObject.value("errors").toString();
             ui->DebugHistory->setItem(RowCount, 0, new QTableWidgetItem(update.toUtf8().constData()));
         }
     }
@@ -2161,7 +2243,7 @@ QString Arbitrage::sendYobitRequest(QString url, bool post)
         QUrlQuery params = QUrlQuery(QUrl(url));
         QString b = params.toString();
         req.setRawHeader("Key",this->YobitApiKey.toStdString().c_str()); //set header for yobit
-        req.setRawHeader("Sign",HMAC_SHA512_SIGNER_YOBIT(b,Secret).toStdString().c_str()); //set header for yobit
+        req.setRawHeader("Sign",HMAC_SHA512_SIGNER(b,Secret).toStdString().c_str()); //set header for yobit
         reply = mgr.post(req, params.query(QUrl::FullyEncoded).toUtf8());
     } else {
         reply = mgr.get(req);
@@ -2211,91 +2293,17 @@ QString Arbitrage::BittrexTimeStampToReadable(QString DateTime)
 
     return DisplayDate;
 }
-QString Arbitrage::HMAC_SHA512_SIGNER(QString UrlToSign, QString Secret)
+QString Arbitrage::HMAC_SHA512_SIGNER(QString string, QString secret)
 {
-
-    QString retval = "";
-
-    QByteArray byteArray = UrlToSign.toUtf8();
-    const char* URL = byteArray.constData();
-
-    QByteArray byteArrayB = Secret.toUtf8();
-    const char* Secretkey = byteArrayB.constData();
-
-    const EVP_MD *md = EVP_sha512();
-    unsigned char* digest = NULL;
-
-    // Using sha512 hash engine here.
-    digest = HMAC(md,  Secretkey, strlen( Secretkey), (unsigned char*) URL, strlen( URL), NULL, NULL);
-
-    // Be careful of the length of string with the choosen hash engine. SHA512 produces a 64-byte hash value which rendered as 128 characters.
-    // Change the length accordingly with your choosen hash engine
-    char mdString[129] = { 0 };
-
-    for(int i = 0; i < 64; i++){
-        sprintf(&mdString[i*2], "%02x", (unsigned int)digest[i]);
-    }
-    retval = mdString;
-    //qDebug() << "HMAC digest:"<< retval;
-
-    return retval;
+    const char* data = QByteArray(string.toUtf8()).constData();
+    const char* s = QByteArray(secret.toUtf8()).constData();
+    return QMessageAuthenticationCode::hash(data, s, QCryptographicHash::Sha512).toHex();
 }
-QString Arbitrage::HMAC_SHA512_SIGNER_YOBIT(QString UrlToSign, QString Secret)
+QString Arbitrage::HMAC_SHA256_SIGNER(QString string, QString secret)
 {
-
-    QString retval = "";
-    QByteArray byteArray = UrlToSign.toUtf8();
-    const char* URL = byteArray.constData();
-
-    QByteArray byteArrayB = Secret.toUtf8();
-    const char* Secretkey = byteArrayB.constData();
-
-    const EVP_MD *md = EVP_sha512();
-    unsigned char* digest = NULL;
-
-    // Using sha512 hash engine here.
-    digest = HMAC(md,  Secretkey, strlen( Secretkey), (unsigned char*) URL, strlen( URL), NULL, NULL);
-
-    // Be careful of the length of string with the choosen hash engine. SHA512 produces a 64-byte hash value which rendered as 128 characters.
-    // Change the length accordingly with your choosen hash engine
-    char mdString[129] = { 0 };
-
-    for(int i = 0; i < 64; i++){
-        sprintf(&mdString[i*2], "%02x", (unsigned int)digest[i]);
-    }
-    retval = mdString;
-    //qDebug() << "HMAC digest:"<< retval;
-
-    return retval;
-}
-QString Arbitrage::HMAC_SHA256_SIGNER(QString UrlToSign, QString Secret)
-{
-
-    QString retval = "";
-
-    QByteArray byteArray = UrlToSign.toUtf8();
-    const char* URL = byteArray.constData();
-
-    QByteArray byteArrayB = Secret.toUtf8();
-    const char* Secretkey = byteArrayB.constData();
-
-    const EVP_MD *md = EVP_sha256();
-    unsigned char* digest = NULL;
-
-    // Using sha512 hash engine here.
-    digest = HMAC(md,  Secretkey, strlen( Secretkey), (unsigned char*) URL, strlen( URL), NULL, NULL);
-
-    // Be careful of the length of string with the choosen hash engine. SHA256 produces a 32-byte hash value which rendered as 64 characters.
-    // Change the length accordingly with your choosen hash engine
-    char mdString[65] = { 0 };
-
-    for(int i = 0; i < 32; i++){
-        sprintf(&mdString[i*2], "%02x", (unsigned int)digest[i]);
-    }
-    retval = mdString;
-    //QMessageBox::information(this,"HMAC Digest","HMAC_SHA256_SIGNER: " + retval);
-
-    return retval;
+    const char* data = QByteArray(string.toUtf8()).constData();
+    const char* s = QByteArray(secret.toUtf8()).constData();
+    return QMessageAuthenticationCode::hash(data, s, QCryptographicHash::Sha256).toHex();
 }
 QString Arbitrage::GetNonce()
 {
