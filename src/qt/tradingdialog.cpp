@@ -150,18 +150,18 @@ void tradingDialog::UpdaterFunction(){
 
 QString tradingDialog::GetMarketSummary(){
 
-     QString Response = sendRequest("https://bittrex.com/api/v1.1/public/GetMarketSummary?market=btc-TX");
+     QString Response = sendRequest("https://bittrex.com/api/v1.1/public/GetMarketSummary?market=btc-TX", false);
      return Response;
 }
 
 QString tradingDialog::GetOrderBook(){
 
-      QString  Response = sendRequest("https://bittrex.com/api/v1.1/public/getorderbook?market=BTC-TX&type=both&depth=50");
+      QString  Response = sendRequest("https://bittrex.com/api/v1.1/public/getorderbook?market=BTC-TX&type=both&depth=50", false);
       return Response;
 }
 
 QString tradingDialog::GetMarketHistory(){
-      QString Response = sendRequest("https://bittrex.com/api/v1.1/public/getmarkethistory?market=BTC-TX&count=100");
+      QString Response = sendRequest("https://bittrex.com/api/v1.1/public/getmarkethistory?market=BTC-TX&count=100", false);
       return Response;
 }
 
@@ -637,7 +637,7 @@ void tradingDialog::on_TradingTabWidget_tabBarClicked(int index)
 }
 
 
-QString tradingDialog::sendRequest(QString url){
+QString tradingDialog::sendRequest(QString url, bool post){
 
     QString Response = "";
     QString Secret   = this->SecretKey;
@@ -654,8 +654,8 @@ QString tradingDialog::sendRequest(QString url){
 
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    //make this conditional,depending if we are using private api call
-    req.setRawHeader("apisign",HMAC_SHA512_SIGNER(url,Secret).toStdString().c_str()); //set header for bittrex
+    if (post)
+        req.setRawHeader("apisign",HMAC_SHA512_SIGNER(url,Secret).toStdString().c_str()); //set header for bittrex
 
     QNetworkReply *reply = mgr.get(req);
     eventLoop.exec(); // blocks stack until "finished()" has been called
