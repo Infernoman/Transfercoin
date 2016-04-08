@@ -30,7 +30,7 @@
 using namespace std;
 using namespace boost;
 
-static const int MAX_OUTBOUND_CONNECTIONS = 16;
+static const int MAX_OUTBOUND_CONNECTIONS = 12;
 
 bool OpenNetworkConnection(const CAddress& addrConnect, CSemaphoreGrant *grantOutbound = NULL, const char *strDest = NULL, bool fOneShot = false);
 
@@ -365,7 +365,7 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest, bool darkSendMaste
         CNode* pnode = FindNode((CService)addrConnect);
         if (pnode)
         {
-        if(darkSendMaster)
+            if(darkSendMaster)
                 pnode->fDarkSendMaster = true;
 
             pnode->AddRef();
@@ -498,6 +498,7 @@ void CNode::copyStats(CNodeStats &stats)
     X(nLastSend);
     X(nLastRecv);
     X(nTimeConnected);
+    X(nTimeOffset);
     X(addrName);
     X(nVersion);
     X(cleanSubVer);
@@ -833,6 +834,15 @@ void ThreadSocketHandler()
             }
             else
             {
+                // According to the internet TCP_NODELAY is not carried into accepted sockets
+                // on all platforms.  Set it again here just to be sure.
+                int set = 1;
+#ifdef WIN32
+                setsockopt(hSocket, IPPROTO_TCP, TCP_NODELAY, (const char*)&set, sizeof(int));
+#else
+                setsockopt(hSocket, IPPROTO_TCP, TCP_NODELAY, (void*)&set, sizeof(int));
+#endif
+
                 LogPrint("net", "accepted connection %s\n", addr.ToString());
                 CNode* pnode = new CNode(hSocket, addr, "", true);
                 pnode->AddRef();
@@ -1012,8 +1022,8 @@ void ThreadMapPort()
         string strDesc = "Transfer " + FormatFullVersion();
 
         try {
-          while (!ShutdownRequested()) {
-        boost::this_thread::interruption_point();
+            while (!ShutdownRequested()) {
+                boost::this_thread::interruption_point();
 
 #ifndef UPNPDISCOVER_SUCCESS
                 /* miniupnpc 1.5 */
@@ -1514,15 +1524,20 @@ bool BindListenPort(const CService &addrBind, string& strError)
         return false;
     }
 
+
+#ifndef WIN32
 #ifdef SO_NOSIGPIPE
     // Different way of disabling SIGPIPE on BSD
     setsockopt(hListenSocket, SOL_SOCKET, SO_NOSIGPIPE, (void*)&nOne, sizeof(int));
 #endif
-
-#ifndef WIN32
     // Allow binding if the port is still in TIME_WAIT state after
     // the program was closed and restarted.  Not an issue on windows.
     setsockopt(hListenSocket, SOL_SOCKET, SO_REUSEADDR, (void*)&nOne, sizeof(int));
+    // Disable Nagle's algorithm
+    setsockopt(hListenSocket, IPPROTO_TCP, TCP_NODELAY, (void*)&nOne, sizeof(int));
+#else
+    setsockopt(hListenSocket, SOL_SOCKET, SO_REUSEADDR, (const char*)&nOne, sizeof(int));
+    setsockopt(hListenSocket, IPPROTO_TCP, TCP_NODELAY, (const char*)&nOne, sizeof(int));
 #endif
 
 
